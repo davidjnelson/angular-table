@@ -1,0 +1,62 @@
+.fhatContainer {
+    width: 70%;
+    margin: 0;
+    padding: 0;
+}
+
+.fhatHeaderTableContainer {
+
+}
+
+.fhatTableContainer {
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+}
+
+.fhatHeaderTable {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    table-layout:fixed;
+    border-collapse:collapse;
+    border-spacing:0;
+}
+
+.fhatTable {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    table-layout:fixed;
+    border-collapse:collapse;
+    border-spacing:0;
+}
+
+.fhatHeaderRow {
+    width: 100%;
+    cursor: pointer;
+}
+
+.fhatRow {
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+.fhatHeaderColumn {
+    width: 50%;
+    margin: 0;
+    padding: 5px;
+    border-top: 1px solid black;
+    border-right: 1px solid black;
+    border-left: 1px solid black;
+    border-collapse: collapse;
+}
+
+.fhatColumn {
+    width: 50%;
+    margin: 0;
+    padding: 5px;
+    border: 1px solid black;
+    border-collapse: collapse;
+}

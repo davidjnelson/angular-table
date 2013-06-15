@@ -1,0 +1,19 @@
+.demoFhatTable {
+    display: inline-block;
+    margin: 0;
+    vertical-align: top;
+    margin-right: -1px;
+}
+
+.demoDetailPane {
+    border-top: 1px solid black;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+    margin: 0;
+    width: 20%;
+    height: 70%;
+    display: inline-block;
+    background-color: #87cefa;
+    vertical-align: top;
+    padding: 5px;
+}

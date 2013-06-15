@@ -1,0 +1,33 @@
+<html ng-app="demo">
+    <head>
+        <link rel="stylesheet" href="css/lib/fixed-header-angular-table.css" />
+        <link rel="stylesheet" href="css/demo/demo.css" />
+    </head>
+
+    <body ng-controller="demoController">
+
+        <fhat model="listOfNumbers" class="demoFhatTable">
+            <fhat-header-row>
+                <fhat-header-column sortable="true">Id</fhat-header-column>
+                <fhat-header-column sortable="false">Name</fhat-header-column>
+            </fhat-header-row>
+
+            <fhat-row on-selected="handleRowSelection(row)" selected-color="#87cefa">
+                <fhat-column><b>{{ row.id }}</b></fhat-column>
+                <fhat-column>{{ row.name }}</fhat-column>
+            </fhat-row>
+        </fhat><!--
+        --><div class="demoDetailPane">
+            <p>Id: {{ selectedRow.id }}</p>
+            <p>Name: {{ selectedRow.name }}</p>
+        </div>
+
+        <script src="js/lib/angular.js"></script>
+        <script src="js/lib/fixed-header-angular-table.js"></script>
+        <script src="js/demo/demo.js"></script>
+
+        <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+    </body>
+
+</html>
