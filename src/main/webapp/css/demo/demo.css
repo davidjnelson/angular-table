@@ -2,7 +2,8 @@
     display: inline-block;
     margin: 0;
     vertical-align: top;
-    height: 30%;
+    height: 100%;
+    width: 70%;
 }
 
 .demoDetailPane {
@@ -16,4 +17,9 @@
     background-color: #87cefa;
     vertical-align: top;
     padding: 5px;
+    margin-left: -1px;
+}
+
+.demoRow {
+    font-size: 16px;
 }

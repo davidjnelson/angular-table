@@ -3,7 +3,7 @@ angular.module('demo', ['fhat'])
         var numbers = [];
         $scope.selectedRow = {};
 
-        for(var i = 0; i < 25; i++) {
+        for(var i = 0; i < 250; i++) {
             numbers.push({
                id: i,
                name: 'name ' + i

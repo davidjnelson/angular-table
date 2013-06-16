@@ -1,41 +1,35 @@
 angular.module('fhat', [])
-    .directive('fhat', function factory(){
+    .directive('fhat', function() {
         return {
-            restrict: 'EA',
-            transclude: true,
-            replace: true,
-            scope: {
-                model:'='
-            },
-            controller: ['$scope', 'fhatMessageBus', function($scope, fhatMessageBus) {
-                $scope.fhatMessageBus = fhatMessageBus;
-            }],
-            template:'<div ng-transclude class="fhatContainer"></div>',
-            link: function(scope, iElement, iAttr){
-                scope.fhatMessageBus.model = scope.model;
-            }
-        };
-    })
+            // only support elements for now to simplify the manual transclusion and replace logic.  see below.
+            // this kills IE8< support for now, which is fine as that's not a use case that this directive is initially solving.
+            restrict: 'E',
+            // manually transclude and replace the template to work around not being able to have a template with td or tr as a root element
+            // see bug: https://github.com/angular/angular.js/issues/1459
+            compile: function compile(tElement, tAttrs) {
+                // find whatever classes were passed into the fhat, and merge them with the built in classes for the container div
+                tElement.addClass('fhatTableContainer');
 
-    .directive('fhatColumn', function() {
-        return {
-            restrict:'EA',
-            replace:true,
-            transclude:true,
-            template:'<div class="fhatHeaderColumn"><div ng-transclude></div></div>'
+                var rowTemplate = tElement[0].outerHTML.replace('<fhat', '<div');
+                rowTemplate = rowTemplate.replace('</fhat>', '</div>');
+                tElement.replaceWith(rowTemplate);
+            },
+            scope: {
+                model: '='
+            }
         };
     })
 
     .directive('fhatHeaderColumn', function() {
         return {
             priority: 1,
-            restrict:'EA',
+            restrict:'E',
             transclude: false,
             replace: false,
             controller: ['$scope', 'fhatMessageBus', function($scope, fhatMessageBus) {
                 $scope.fhatMessageBus = fhatMessageBus;
             }],
-            compile: function compile(tElement, tAttrs, transclude) {
+            compile: function compile(tElement, tAttrs) {
                 return {
                     pre: function preLink(scope, iElement, iAttrs, controller) {
 
@@ -62,7 +56,7 @@ angular.module('fhat', [])
 
     .directive('fhatHeaderRow', function($compile) {
         return {
-            restrict: 'EA',
+            restrict: 'E',
             replace: false,
             transclude: false,
             controller: ['$scope', '$compile', '$interpolate', 'fhatMessageBus', function($scope, $compile, $interpolate, fhatMessageBus) {
@@ -71,7 +65,7 @@ angular.module('fhat', [])
                 $scope.interpolate = $interpolate;
                 $scope.fhatMessageBus.headerColumns = [];
             }],
-            compile: function compile(tElement, tAttrs, transclude) {
+            compile: function compile(tElement, tAttrs) {
                 return {
                     pre: function preLink(scope, iElement, iAttrs, controller) {
 
@@ -110,15 +104,49 @@ angular.module('fhat', [])
 
     .directive('fhatRow', function() {
         return {
-            restrict: 'EA',
-            replace: true,
-            controller: ['$scope', 'fhatMessageBus', function($scope, fhatMessageBus) {
-                $scope.fhatMessageBus = fhatMessageBus;
+            // only support elements for now to simplify the manual transclusion and replace logic.  see below.
+            // this kills IE8< support for now, which is fine as that's not a use case that this directive is initially solving.
+            restrict: 'E',
+            controller: ['$scope', '$parse', function($scope, $parse) {
+
+                $scope.handleClick = function(row, parentScopeClickHandler) {
+                    var clickHandlerFunctionName = parentScopeClickHandler.replace('(row)', '');
+
+                    $scope.$parent[clickHandlerFunctionName](row);
+                };
             }],
-            template: '<div class="fhatTableContainer"><table class="fhatTable"><tr ng-repeat="row in fhatMessageBus.model" class="fhatRow">' +
-                '<td class="fhatColumn" ng-repeat="columns in row" ng-click="onSelected({ row: row})">{{ columns }}</td></tr></table></div>',
-            scope: {
-                onSelected: '&'
+            // manually transclude and replace the template to work around not being able to have a template with td or tr as a root element
+            // see bug: https://github.com/angular/angular.js/issues/1459
+            compile: function compile(tElement, tAttrs) {
+                // find whatever classes were passed into the fhat-row, and merge them with the built in classes for the tr
+                tElement.addClass('fhatRow');
+
+                // find whatever classes were passed into each fhat-column, and merge them with the built in classes for the td
+                tElement.children().addClass('fhatColumn');
+
+                // replace fhat-row with tr
+                var rowTemplate = tElement[0].outerHTML.replace(/fhat-row/g, 'tr');
+
+                // replace fhat-column with td
+                rowTemplate = rowTemplate.replace(/fhat-column/g, 'td');
+
+                // add the ng-repeat and row selection click handler to each row
+                rowTemplate = rowTemplate.replace('<tr',
+                    '<tr ng-repeat="row in model" ng-click="handleClick(row, \'' + tAttrs.onSelected + '\')" ');
+
+                // TODO: merge the user table classes and the component table classes
+
+
+                // TODO: merge the user table container div classes and the component table container div classes
+
+                // TODO: manage the height of the table container div on load and window resize, as 100% is too big
+                // given whatever padding, margin and border the user specifies to the container
+
+                // wrap our rows in a table, and a container div.  the container div will manage the scrolling.
+                rowTemplate = '<div class="fhatTableContainer"><table class="fhatTable">' + rowTemplate + '</table></div>';
+
+                // replace the original template with the manually replaced and transcluded version
+                tElement.replaceWith(rowTemplate);
             }
         };
     })
