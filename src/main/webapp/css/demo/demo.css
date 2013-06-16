@@ -2,7 +2,7 @@
     display: inline-block;
     margin: 0;
     vertical-align: top;
-    margin-right: -1px;
+    height: 30%;
 }
 
 .demoDetailPane {
