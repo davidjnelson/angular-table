@@ -1,5 +1,5 @@
 .demoFhatTable {
-    display: inline-block;
+    float: left;
     margin: 0;
     vertical-align: top;
     height: 100%;
@@ -7,17 +7,16 @@
 }
 
 .demoDetailPane {
+    float: left;
     border-top: 1px solid black;
     border-right: 1px solid black;
     border-bottom: 1px solid black;
     margin: 0;
     width: 20%;
     height: 70%;
-    display: inline-block;
     background-color: #87cefa;
     vertical-align: top;
     padding: 5px;
-    margin-left: -1px;
 }
 
 .demoRow {

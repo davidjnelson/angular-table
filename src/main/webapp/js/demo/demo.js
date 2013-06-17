@@ -3,7 +3,7 @@ angular.module('demo', ['fhat'])
         var numbers = [];
         $scope.selectedRow = {};
 
-        for(var i = 0; i < 250; i++) {
+        for(var i = 0; i < 50; i++) {
             numbers.push({
                id: i,
                name: 'name ' + i
@@ -14,5 +14,11 @@ angular.module('demo', ['fhat'])
 
         $scope.handleRowSelection = function(row) {
             $scope.selectedRow = row;
+        };
+
+        $scope.addRow = function() {
+            $scope.listOfNumbers.push({
+                id: parseInt($scope.listOfNumbers.length, 10) + 1,
+                name: 'name ' + $scope.listOfNumbers.length + 1 })
         };
     }]);

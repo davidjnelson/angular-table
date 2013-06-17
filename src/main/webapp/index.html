@@ -14,12 +14,16 @@
 
             <fhat-row on-selected="handleRowSelection(row)" selected-color="#87cefa" even-color="#ffffff" odd-color="#eeeeee" class="demoRow">
                 <fhat-column style="font-family: courier;"><b>{{ row.id }}</b></fhat-column>
-                <fhat-column style="background-color: lemonchiffon;">{{ row.name }}</fhat-column>
+                <fhat-column style="background-color: lemonchiffon;"><input type="text" ng-model="row.name"></input></fhat-column>
             </fhat-row>
-        </fhat><!--
-        --><div class="demoDetailPane">
+        </fhat>
+
+        <div class="demoDetailPane">
             <p>Id: {{ selectedRow.id }}</p>
-            <p>Name: {{ selectedRow.name }}</p>
+            <p>Name: <input type="text" ng-model="selectedRow.name"></input></p>
+
+            <p><button ng-click="listOfNumbers.push({ id: (listOfNumbers.length - 1) + 1, name: 'name ' + ((listOfNumbers.length - 1) + 1) })">Add Row To End</button></p>
+            <p><button ng-click="listOfNumbers.pop()">Remove Last Row</button></p>
         </div>
 
         <script src="js/lib/angular.js"></script>
