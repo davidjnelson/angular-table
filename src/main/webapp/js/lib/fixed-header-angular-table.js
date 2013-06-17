@@ -1,5 +1,5 @@
 angular.module('fhat', [])
-    .directive('fhat', function() {
+    .directive('fhat', ['fhatMessageBus', function(fhatMessageBus) {
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.  see below.
             // this kills IE8< support for now, which is fine as that's not a use case that this directive is initially solving.
@@ -7,6 +7,8 @@ angular.module('fhat', [])
             // manually transclude and replace the template to work around not being able to have a template with td or tr as a root element
             // see bug: https://github.com/angular/angular.js/issues/1459
             compile: function (tElement, tAttrs) {
+                fhatMessageBus.sortExpression = tAttrs.defaultSortColumn;
+
                 // find whatever classes were passed into the fhat, and merge them with the built in classes for the container div
                 tElement.addClass('fhatTableContainer');
 
@@ -18,14 +20,20 @@ angular.module('fhat', [])
                 model: '='
             }
         };
-    })
-    .directive('fhatHeaderRow', ['fhatManualCompiler', function(fhatManualCompiler) {
+    }])
+    .directive('fhatHeaderRow', ['fhatManualCompiler', 'fhatMessageBus', function(fhatManualCompiler, fhatMessageBus) {
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.  see below.
             // this kills IE8< support for now, which is fine as that's not a use case that this directive is initially solving.
             restrict: 'E',
             controller: ['$scope', '$parse', function($scope, $parse) {
+                $scope.fhatMessageBus = fhatMessageBus;
 
+                $scope.setSortExpression = function(columnName) {
+                    fhatMessageBus.sortExpression = columnName;
+                    // TODO: this might be a nicer ux if the reverse was stored per column rather than across all columns
+                    $scope.fhatMessageBus.reverseSortEnabled = !$scope.fhatMessageBus.reverseSortEnabled;
+                };
             }],
             // manually transclude and replace the template to work around not being able to have a template with td or tr as a root element
             // see bug: https://github.com/angular/angular.js/issues/1459
@@ -39,7 +47,10 @@ angular.module('fhat', [])
             // only support elements for now to simplify the manual transclusion and replace logic.  see below.
             // this kills IE8< support for now, which is fine as that's not a use case that this directive is initially solving.
             restrict: 'E',
-            controller: ['$scope', '$parse', function($scope, $parse) {
+            controller: ['$scope', function($scope) {
+                $scope.sortExpression = fhatMessageBus.sortExpression;
+                $scope.reverseSortEnabled = fhatMessageBus.reverseSortEnabled;
+
                 $scope.handleClick = function(row, parentScopeClickHandler, selectedRowBackgroundColor) {
                     var clickHandlerFunctionName = parentScopeClickHandler.replace('(row)', '');
 
@@ -83,6 +94,27 @@ angular.module('fhat', [])
             // find whatever classes were passed into each fhat-column, and merge them with the built in classes for the td
             tElement.children().addClass('fhat' + headerUppercase + 'Column');
 
+            if(isHeader) {
+                angular.forEach(tElement.children(), function(childColumn, index) {
+                    // add the ascending sort icon
+                    angular.element(childColumn).find('fhat-sort-arrow-descending').attr('ng-show',
+                        'fhatMessageBus.sortExpression == \'' + angular.element(childColumn).attr('sort-field-name') +
+                        '\' && fhatMessageBus.reverseSortEnabled == false').addClass('fhatDefaultSortArrowAscending');
+
+                    // add the descending sort icon
+                    angular.element(childColumn).find('fhat-sort-arrow-ascending').attr('ng-show',
+                        'fhatMessageBus.sortExpression == \'' + angular.element(childColumn).attr('sort-field-name') +
+                        '\' && fhatMessageBus.reverseSortEnabled == true').addClass('fhatDefaultSortArrowDescending');
+
+                    // add the sort click handler
+                    angular.element(childColumn).attr('ng-click', 'setSortExpression(\'' +
+                        angular.element(childColumn).attr('sort-field-name') + '\')');
+
+                    // remove the sort field name attribute from the dsl
+                    angular.element(childColumn).removeAttr('sort-field-name');
+                });
+            }
+
             // replace fhat-row with tr
             var rowRegexString = 'fhat-' + headerDash + 'row';
             var rowRegex = new RegExp(rowRegexString, "g");
@@ -94,11 +126,13 @@ angular.module('fhat', [])
             rowTemplate = rowTemplate.replace(columnRegex, 'td');
 
             if(isHeader) {
-
+                rowTemplate = rowTemplate.replace(/fhat-sort-arrow-descending/g, 'div');
+                rowTemplate = rowTemplate.replace(/fhat-sort-arrow-ascending/g, 'div');
             } else {
                 // add the ng-repeat and row selection click handler to each row
                 rowTemplate = rowTemplate.replace('<tr',
-                    '<tr ng-repeat="row in model" style="background-color: {{ row.backgroundColor }}" ng-click="handleClick(row, \'' +
+                    '<tr ng-repeat="row in model | orderBy:fhatMessageBus.sortExpression:fhatMessageBus.reverseSortEnabled" ' +
+                        'style="background-color: {{ row.backgroundColor }}" ng-click="handleClick(row, \'' +
                         tAttrs.onSelected + '\', \'' + tAttrs.selectedColor + '\')" ');
             }
 
@@ -116,6 +150,10 @@ angular.module('fhat', [])
         // store a reference to the previously selected row so we can access it without looking it up from the bound model
         self.previouslySelectedRow = {};
         self.previouslySelectedRowColor = '';
+
+        // store the sort expression and if it's reversed
+        self.sortExpression = '';
+        self.reverseSortEnabled = false;
 
         return self;
     });
