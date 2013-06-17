@@ -15,6 +15,18 @@ angular.module('fhat', [])
                 var rowTemplate = tElement[0].outerHTML.replace('<fhat', '<div');
                 rowTemplate = rowTemplate.replace('</fhat>', '</div>');
                 tElement.replaceWith(rowTemplate);
+
+                // return linking function
+                return function(scope, iElement) {
+                    scope.fhatMessageBus = fhatMessageBus;
+
+                    scope.$watch('fhatMessageBus', function(newValue, oldValue) {
+                        // scroll to top when sort applied
+                        var tableScrollContainer = iElement.children()[1];
+
+                        tableScrollContainer.scrollTop = 0;
+                    }, true);
+                };
             },
             scope: {
                 model: '='

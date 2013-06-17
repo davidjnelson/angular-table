@@ -3,28 +3,12 @@ angular.module('demo', ['fhat'])
         var numbers = [];
         $scope.selectedRow = {};
 
-        /*
         for(var i = 0; i < 50; i++) {
             numbers.push({
                id: i,
-               name: '8 name ' + i
+               name: 'name ' + i
             });
-        }*/
-
-                    numbers.push({
-               id: 1,
-               name: 'zob'
-            });
-
-                    numbers.push({
-               id: 2,
-               name: 'arank'
-            });
-
-                    numbers.push({
-               id: 3,
-               name: 'zill'
-            });
+        }
 
         $scope.listOfNumbers = numbers;
 
