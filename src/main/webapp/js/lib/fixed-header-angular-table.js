@@ -109,22 +109,24 @@ angular.module('fhat', [])
 
             if(isHeader) {
                 angular.forEach(tElement.children(), function(childColumn, index) {
-                    // add the ascending sort icon
-                    angular.element(childColumn).find('fhat-sort-arrow-descending').attr('ng-show',
-                        'fhatMessageBus.sortExpression == \'' + angular.element(childColumn).attr('sort-field-name') +
-                        '\' && !fhatMessageBus.sortDirectionToColumnMap[\'' + angular.element(childColumn).attr('sort-field-name') + '\']').addClass('fhatDefaultSortArrowAscending');
+                    if(angular.element(childColumn).attr('sortable') === 'true') {
+                        // add the ascending sort icon
+                        angular.element(childColumn).find('fhat-sort-arrow-descending').attr('ng-show',
+                            'fhatMessageBus.sortExpression == \'' + angular.element(childColumn).attr('sort-field-name') +
+                            '\' && !fhatMessageBus.sortDirectionToColumnMap[\'' + angular.element(childColumn).attr('sort-field-name') + '\']').addClass('fhatDefaultSortArrowAscending');
 
-                    // add the descending sort icon
-                    angular.element(childColumn).find('fhat-sort-arrow-ascending').attr('ng-show',
-                        'fhatMessageBus.sortExpression == \'' + angular.element(childColumn).attr('sort-field-name') +
-                        '\' && fhatMessageBus.sortDirectionToColumnMap[\'' + angular.element(childColumn).attr('sort-field-name') + '\']').addClass('fhatDefaultSortArrowDescending');
+                        // add the descending sort icon
+                        angular.element(childColumn).find('fhat-sort-arrow-ascending').attr('ng-show',
+                            'fhatMessageBus.sortExpression == \'' + angular.element(childColumn).attr('sort-field-name') +
+                            '\' && fhatMessageBus.sortDirectionToColumnMap[\'' + angular.element(childColumn).attr('sort-field-name') + '\']').addClass('fhatDefaultSortArrowDescending');
 
-                    // add the sort click handler
-                    angular.element(childColumn).attr('ng-click', 'setSortExpression(\'' +
-                        angular.element(childColumn).attr('sort-field-name') + '\')');
+                        // add the sort click handler
+                        angular.element(childColumn).attr('ng-click', 'setSortExpression(\'' +
+                            angular.element(childColumn).attr('sort-field-name') + '\')');
 
-                    // remove the sort field name attribute from the dsl
-                    angular.element(childColumn).removeAttr('sort-field-name');
+                        // remove the sort field name attribute from the dsl
+                        angular.element(childColumn).removeAttr('sort-field-name');
+                    }
                 });
             }
 
