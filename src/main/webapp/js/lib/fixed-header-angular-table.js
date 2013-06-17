@@ -43,13 +43,17 @@ angular.module('fhat', [])
                 $scope.handleClick = function(row, parentScopeClickHandler, selectedRowBackgroundColor) {
                     var clickHandlerFunctionName = parentScopeClickHandler.replace('(row)', '');
 
-                    fhatMessageBus.previouslySelectedRow.backgroundColor = fhatMessageBus.previouslySelectedRowColor;
+                    if(selectedRowBackgroundColor !== 'undefined') {
+                        fhatMessageBus.previouslySelectedRow.backgroundColor = fhatMessageBus.previouslySelectedRowColor;
 
-                    row.backgroundColor = selectedRowBackgroundColor;
+                        row.backgroundColor = selectedRowBackgroundColor;
 
-                    fhatMessageBus.previouslySelectedRow = row;
+                        fhatMessageBus.previouslySelectedRow = row;
+                    }
 
-                    $scope.$parent[clickHandlerFunctionName](row);
+                    if(clickHandlerFunctionName !== 'undefined') {
+                        $scope.$parent[clickHandlerFunctionName](row);
+                    }
                 };
             }],
             // manually transclude and replace the template to work around not being able to have a template with td or tr as a root element
