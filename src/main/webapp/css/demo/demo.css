@@ -22,3 +22,7 @@
 .demoRow {
     font-size: 16px;
 }
+
+.demoHeaderColumn {
+    color: gray;
+}
