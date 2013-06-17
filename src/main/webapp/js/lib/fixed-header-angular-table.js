@@ -43,8 +43,9 @@ angular.module('fhat', [])
 
                 $scope.setSortExpression = function(columnName) {
                     fhatMessageBus.sortExpression = columnName;
-                    // TODO: this might be a nicer ux if the reverse was stored per column rather than across all columns
-                    $scope.fhatMessageBus.reverseSortEnabled = !$scope.fhatMessageBus.reverseSortEnabled;
+
+                    // track sort directions by sorted column for a better ux
+                    fhatMessageBus.sortDirectionToColumnMap[fhatMessageBus.sortExpression] = !fhatMessageBus.sortDirectionToColumnMap[fhatMessageBus.sortExpression];
                 };
             }],
             // manually transclude and replace the template to work around not being able to have a template with td or tr as a root element
@@ -111,12 +112,12 @@ angular.module('fhat', [])
                     // add the ascending sort icon
                     angular.element(childColumn).find('fhat-sort-arrow-descending').attr('ng-show',
                         'fhatMessageBus.sortExpression == \'' + angular.element(childColumn).attr('sort-field-name') +
-                        '\' && fhatMessageBus.reverseSortEnabled == false').addClass('fhatDefaultSortArrowAscending');
+                        '\' && !fhatMessageBus.sortDirectionToColumnMap[\'' + angular.element(childColumn).attr('sort-field-name') + '\']').addClass('fhatDefaultSortArrowAscending');
 
                     // add the descending sort icon
                     angular.element(childColumn).find('fhat-sort-arrow-ascending').attr('ng-show',
                         'fhatMessageBus.sortExpression == \'' + angular.element(childColumn).attr('sort-field-name') +
-                        '\' && fhatMessageBus.reverseSortEnabled == true').addClass('fhatDefaultSortArrowDescending');
+                        '\' && fhatMessageBus.sortDirectionToColumnMap[\'' + angular.element(childColumn).attr('sort-field-name') + '\']').addClass('fhatDefaultSortArrowDescending');
 
                     // add the sort click handler
                     angular.element(childColumn).attr('ng-click', 'setSortExpression(\'' +
@@ -143,7 +144,7 @@ angular.module('fhat', [])
             } else {
                 // add the ng-repeat and row selection click handler to each row
                 rowTemplate = rowTemplate.replace('<tr',
-                    '<tr ng-repeat="row in model | orderBy:fhatMessageBus.sortExpression:fhatMessageBus.reverseSortEnabled" ' +
+                    '<tr ng-repeat="row in model | orderBy:fhatMessageBus.sortExpression:fhatMessageBus.sortDirectionToColumnMap[fhatMessageBus.sortExpression]" ' +
                         'style="background-color: {{ row.backgroundColor }}" ng-click="handleClick(row, \'' +
                         tAttrs.onSelected + '\', \'' + tAttrs.selectedColor + '\')" ');
             }
@@ -163,9 +164,11 @@ angular.module('fhat', [])
         self.previouslySelectedRow = {};
         self.previouslySelectedRowColor = '';
 
-        // store the sort expression and if it's reversed
+        // store the sort expression
         self.sortExpression = '';
-        self.reverseSortEnabled = false;
+
+        // store the columns sort direction mapping
+        self.sortDirectionToColumnMap = {};
 
         return self;
     });
