@@ -144,10 +144,16 @@ angular.module('fhat', [])
                 rowTemplate = rowTemplate.replace(/fhat-sort-arrow-descending/g, 'div');
                 rowTemplate = rowTemplate.replace(/fhat-sort-arrow-ascending/g, 'div');
             } else {
+                var selectedBackgroundColor = '';
+
+                if(typeof(tAttrs.selectedColor) !== 'undefined') {
+                    selectedBackgroundColor = 'style="background-color: {{ row.backgroundColor }}"';
+                }
+
                 // add the ng-repeat and row selection click handler to each row
                 rowTemplate = rowTemplate.replace('<tr',
                     '<tr ng-repeat="row in model | orderBy:fhatMessageBus.sortExpression:fhatMessageBus.sortDirectionToColumnMap[fhatMessageBus.sortExpression]" ' +
-                        'style="background-color: {{ row.backgroundColor }}" ng-click="handleClick(row, \'' +
+                        selectedBackgroundColor + ' ng-click="handleClick(row, \'' +
                         tAttrs.onSelected + '\', \'' + tAttrs.selectedColor + '\')" ');
             }
 

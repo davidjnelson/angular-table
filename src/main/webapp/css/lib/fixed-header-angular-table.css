@@ -27,7 +27,7 @@
 }
 
 .fhatHeaderRow {
-    cursor: pointer;
+
 }
 
 .fhatRow {
@@ -37,6 +37,7 @@
 .fhatHeaderColumn {
     padding: 5px;
     border: 1px solid black;
+    cursor: pointer;
 }
 
 .fhatColumn {
