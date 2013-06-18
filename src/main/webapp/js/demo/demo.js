@@ -1,20 +1,17 @@
 angular.module('demo', ['fhat'])
     .controller('demoController', ['$scope', function($scope) {
-        var numbers = [];
         $scope.selectedRow = {};
+        $scope.listOfNumbers = [];
 
-        // TODO: fix this
         $scope.addFiftyRows = function(startIndex) {
             var endIndex = startIndex + 50;
 
             for(var i = startIndex; i < endIndex; i++) {
-                numbers.push({
+                $scope.listOfNumbers.push({
                    id: i,
                    name: 'name ' + i
                 });
             }
-
-            $scope.listOfNumbers = numbers;
         }
 
         $scope.handleRowSelection = function(row) {
