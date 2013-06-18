@@ -2,7 +2,6 @@ angular.module('fhat', [])
     .directive('fhat', ['fhatMessageBus', function(fhatMessageBus) {
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.  see below.
-            // this kills IE8< support for now, which is fine as that's not a use case that this directive is initially solving.
             restrict: 'E',
             // manually transclude and replace the template to work around not being able to have a template with td or tr as a root element
             // see bug: https://github.com/angular/angular.js/issues/1459
@@ -22,9 +21,11 @@ angular.module('fhat', [])
 
                     scope.$watch('fhatMessageBus', function(newValue, oldValue) {
                         // scroll to top when sort applied
-                        var tableScrollContainer = iElement.children()[1];
+                        if(newValue.sortExpression !== oldValue.sortExpression) {
+                            var tableScrollContainer = iElement.children()[1];
 
-                        tableScrollContainer.scrollTop = 0;
+                            tableScrollContainer.scrollTop = 0;
+                        }
                     }, true);
                 };
             },
@@ -36,7 +37,6 @@ angular.module('fhat', [])
     .directive('fhatHeaderRow', ['fhatManualCompiler', 'fhatMessageBus', function(fhatManualCompiler, fhatMessageBus) {
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.  see below.
-            // this kills IE8< support for now, which is fine as that's not a use case that this directive is initially solving.
             restrict: 'E',
             controller: ['$scope', '$parse', function($scope, $parse) {
                 $scope.fhatMessageBus = fhatMessageBus;
@@ -55,10 +55,9 @@ angular.module('fhat', [])
             }
         };
     }])
-    .directive('fhatRow', ['fhatManualCompiler', 'fhatMessageBus', function(fhatManualCompiler, fhatMessageBus) {
+    .directive('fhatRow', ['fhatManualCompiler', 'fhatMessageBus', 'fhatDebouncedResizer', function(fhatManualCompiler, fhatMessageBus, fhatDebouncedResizer) {
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.  see below.
-            // this kills IE8< support for now, which is fine as that's not a use case that this directive is initially solving.
             restrict: 'E',
             controller: ['$scope', function($scope) {
                 $scope.sortExpression = fhatMessageBus.sortExpression;
@@ -98,9 +97,28 @@ angular.module('fhat', [])
                 fhatMessageBus.rowSelectedBackgroundColor = tAttrs.selectedColor;
 
                 fhatManualCompiler.compileRow(tElement, tAttrs, false);
+
+                // return a linking function
+                return function(scope, iElement) {
+                    var scrollingContainerHeight = fhatDebouncedResizer.calculateScrollingContainerHeight();
+
+                    iElement.css('height', scrollingContainerHeight);
+                };
             }
         };
     }])
+
+    .service('fhatDebouncedResizer', function() {
+        var self = this;
+
+        self.calculateScrollingContainerHeight = function() {
+            // algorithm: take container height, and subtract by the first column in the header tables height, padding, margin and border combined
+            return 432;
+        };
+
+        return self;
+    })
+
     .service('fhatManualCompiler', ['fhatMessageBus', function(fhatMessageBus) {
         var self = this;
 
@@ -181,6 +199,7 @@ angular.module('fhat', [])
         };
     }])
 
+    // be mindful of what is stored here, there is a watch tracking the properties of the singleton this returns.
     .service('fhatMessageBus', function() {
         var self = this;
 

@@ -9,7 +9,7 @@
         <fhat model="listOfNumbers" default-sort-column="id" class="demoFhatTable">
             <fhat-header-row>
                 <fhat-header-column sortable="true" sort-field-name="id"
-                                    style="background-color: deepskyblue; width:70%;">
+                                    style="background-color: deepskyblue; width:40%;">
                     <div style="display: inline-block;">Id {{ 1 + 1 }}</div>
                     <fhat-sort-arrow-ascending></fhat-sort-arrow-ascending>
                     <fhat-sort-arrow-descending></fhat-sort-arrow-descending>
@@ -18,22 +18,28 @@
                     <fhat-sort-arrow-ascending></fhat-sort-arrow-ascending>
                     <fhat-sort-arrow-descending></fhat-sort-arrow-descending> <div style="display: inline-block;"><i>Name</i></div>
                 </fhat-header-column>
+                <fhat-header-column sortable="true" sort-field-name="street" style="width: 30%;">
+                    <fhat-sort-arrow-ascending></fhat-sort-arrow-ascending>
+                    <fhat-sort-arrow-descending></fhat-sort-arrow-descending> <div style="display: inline-block;">Street</div>
+                </fhat-header-column>
             </fhat-header-row>
 
             <fhat-row on-selected="handleRowSelection(row)" selected-color="#87cefa" even-color="#ffffff" odd-color="#eeeeee" class="demoRow">
-                <fhat-column style="font-family: courier; width:70%;"><b>{{ row.id }}</b></fhat-column>
+                <fhat-column style="font-family: courier; width:40%;"><b>{{ row.id }}</b></fhat-column>
                 <fhat-column style="background-color: lemonchiffon; width: 30%;"><input type="text" ng-model="row.name"></input></fhat-column>
+                <fhat-column style="width: 30%;">{{ row.street }}</input></fhat-column>
             </fhat-row>
         </fhat>
 
         <div class="demoDetailPane">
             <p>Id: {{ selectedRow.id }}</p>
             <p>Name: <input type="text" ng-model="selectedRow.name"></input></p>
+            <p>Street: <input type="text" ng-model="selectedRow.street"></input></p>
 
-            <p><button ng-click="listOfNumbers.push({ id: (listOfNumbers.length - 1) + 1, name: 'name ' + ((listOfNumbers.length - 1) + 1) })">Add Row To End</button></p>
+            <p><button ng-click="addRows(1)">Add Row To End</button></p>
             <p><button ng-click="listOfNumbers.pop()">Remove Last Row</button></p>
             <p><button ng-click="listOfNumbers = []">Remove All Rows</button></p>
-            <p><button ng-click="addFiftyRows(listOfNumbers.length + 1)">Add 50 Rows</button></p>
+            <p><button ng-click="addRows(50)">Add 50 Rows</button></p>
         </div>
 
         <script src="js/lib/angular.js"></script>
