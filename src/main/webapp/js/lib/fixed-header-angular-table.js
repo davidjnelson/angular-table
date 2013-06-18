@@ -1,7 +1,8 @@
 angular.module('fhat', [])
-    .run(['$window', function($window) {
-        $window.resize(function() {
-            console.log('hey');
+    .run(['$window', 'fhatResizeState', function($window, fhatResizeState) {
+        angular.element($window).bind('resize', function() {
+            // TODO: debounce me
+            fhatResizeState.debouncedResizeFiring = true;
         });
     }])
     .directive('fhat', ['fhatMessageBus', function(fhatMessageBus) {
@@ -19,20 +20,6 @@ angular.module('fhat', [])
                 var rowTemplate = tElement[0].outerHTML.replace('<fhat', '<div');
                 rowTemplate = rowTemplate.replace('</fhat>', '</div>');
                 tElement.replaceWith(rowTemplate);
-
-                // return linking function
-                return function(scope, iElement) {
-                    scope.fhatMessageBus = fhatMessageBus;
-
-                    scope.$watch('fhatMessageBus', function(newValue, oldValue) {
-                        // scroll to top when sort applied
-                        if(newValue.sortExpression !== oldValue.sortExpression) {
-                            var tableScrollContainer = iElement.children()[1];
-
-                            tableScrollContainer.scrollTop = 0;
-                        }
-                    }, true);
-                };
             },
             scope: {
                 model: '='
@@ -47,7 +34,9 @@ angular.module('fhat', [])
                 $scope.fhatMessageBus = fhatMessageBus;
 
                 $scope.setSortExpression = function(columnName) {
+                    // TODO: consider splitting these out into seperate services so two events are not handled here in the message bus watch in fhat-row
                     fhatMessageBus.sortExpression = columnName;
+                    fhatMessageBus.sortFiring = true;
 
                     // track sort directions by sorted column for a better ux
                     fhatMessageBus.sortDirectionToColumnMap[fhatMessageBus.sortExpression] = !fhatMessageBus.sortDirectionToColumnMap[fhatMessageBus.sortExpression];
@@ -72,7 +61,6 @@ angular.module('fhat', [])
             restrict: 'E',
             controller: ['$scope', function($scope) {
                 $scope.sortExpression = fhatMessageBus.sortExpression;
-                $scope.reverseSortEnabled = fhatMessageBus.reverseSortEnabled;
 
                 $scope.handleClick = function(row, parentScopeClickHandler, selectedRowBackgroundColor) {
                     var clickHandlerFunctionName = parentScopeClickHandler.replace('(row)', '');
@@ -111,9 +99,24 @@ angular.module('fhat', [])
 
                 // return a linking function
                 return function(scope, iElement) {
+                    scope.fhatMessageBus = fhatMessageBus;
+
                     var scrollingContainerHeight = iElement[0].clientHeight - fhatMessageBus.headerOffsetHeight + 'px';
 
                     iElement.css('height', scrollingContainerHeight);
+
+                    scope.$watch('fhatMessageBus', function(newValue, oldValue) {
+                        console.log('watch handler fired');
+
+                        // scroll to top when sort applied
+
+                        if(fhatMessageBus.sortFiring) {
+                            // turn off the sortFiring tracking before manipulating the dom so we don't have wasted events
+                            fhatMessageBus.sortFiring = false;
+
+                            iElement[0].scrollTop = 0;
+                        }
+                    }, true);
                 };
             }
         };
@@ -126,6 +129,23 @@ angular.module('fhat', [])
             // algorithm: take container height, and subtract by the first column in the header tables height, padding, margin and border combined
             return 432;
         };
+
+        return self;
+    })
+
+        /*
+    .service('fhatJqLiteExtension', function() {
+        var self = this;
+
+        self.
+
+        return self;
+    })*/
+
+    .service('fhatResizeState', function() {
+        var self = this;
+
+        self.debouncedResizeFiring = false;
 
         return self;
     })
@@ -210,15 +230,6 @@ angular.module('fhat', [])
         };
     }])
 
-    /*
-    .service('fhatJqLiteExtension', function() {
-        var self = this;
-
-        self.
-
-        return self;
-    })*/
-
     // be mindful of what is stored here, there is a watch tracking the properties of the singleton this returns.
     .service('fhatMessageBus', function() {
         var self = this;
@@ -237,6 +248,9 @@ angular.module('fhat', [])
         self.selectedRowColor = '';
         self.evenRowColor = '';
         self.oddRowColor = '';
+
+        // track whether sort is firing so we can scroll the grid up to the top
+        self.sortFiring = false;
 
         // store the offset height of the header so we know what the height of the scrolling container should be.
         self.headerOffsetHeight = 0;
