@@ -1,4 +1,9 @@
 angular.module('fhat', [])
+    .run(['$window', function($window) {
+        $window.resize(function() {
+            console.log('hey');
+        });
+    }])
     .directive('fhat', ['fhatMessageBus', function(fhatMessageBus) {
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.  see below.
@@ -52,6 +57,12 @@ angular.module('fhat', [])
             // see bug: https://github.com/angular/angular.js/issues/1459
             compile: function (tElement, tAttrs) {
                 fhatManualCompiler.compileRow(tElement, tAttrs, true);
+
+                // return a linking function
+                return function(scope, iElement) {
+                    // unfortunately, angular's jqlite has no implemented computed properties, so we can't just call css('height')
+                    fhatMessageBus.headerOffsetHeight = iElement[0].offsetHeight;
+                };
             }
         };
     }])
@@ -100,7 +111,7 @@ angular.module('fhat', [])
 
                 // return a linking function
                 return function(scope, iElement) {
-                    var scrollingContainerHeight = fhatDebouncedResizer.calculateScrollingContainerHeight();
+                    var scrollingContainerHeight = iElement[0].clientHeight - fhatMessageBus.headerOffsetHeight + 'px';
 
                     iElement.css('height', scrollingContainerHeight);
                 };
@@ -199,6 +210,15 @@ angular.module('fhat', [])
         };
     }])
 
+    /*
+    .service('fhatJqLiteExtension', function() {
+        var self = this;
+
+        self.
+
+        return self;
+    })*/
+
     // be mindful of what is stored here, there is a watch tracking the properties of the singleton this returns.
     .service('fhatMessageBus', function() {
         var self = this;
@@ -217,6 +237,9 @@ angular.module('fhat', [])
         self.selectedRowColor = '';
         self.evenRowColor = '';
         self.oddRowColor = '';
+
+        // store the offset height of the header so we know what the height of the scrolling container should be.
+        self.headerOffsetHeight = 0;
 
         return self;
     });
