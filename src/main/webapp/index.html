@@ -32,6 +32,8 @@
 
             <p><button ng-click="listOfNumbers.push({ id: (listOfNumbers.length - 1) + 1, name: 'name ' + ((listOfNumbers.length - 1) + 1) })">Add Row To End</button></p>
             <p><button ng-click="listOfNumbers.pop()">Remove Last Row</button></p>
+            <p><button ng-click="listOfNumbers = []">Remove All Rows</button></p>
+            <p><button ng-click="addFiftyRows(listOfNumbers.length + 1)">Add 50 Rows</button></p>
         </div>
 
         <script src="js/lib/angular.js"></script>

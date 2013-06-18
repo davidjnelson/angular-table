@@ -68,15 +68,27 @@ angular.module('fhat', [])
                     var clickHandlerFunctionName = parentScopeClickHandler.replace('(row)', '');
 
                     if(selectedRowBackgroundColor !== 'undefined') {
-                        fhatMessageBus.previouslySelectedRow.backgroundColor = fhatMessageBus.previouslySelectedRowColor;
+                        fhatMessageBus.previouslySelectedRow.rowSelected = false;
 
-                        row.backgroundColor = selectedRowBackgroundColor;
+                        row.rowSelected = true;
 
                         fhatMessageBus.previouslySelectedRow = row;
                     }
 
                     if(clickHandlerFunctionName !== 'undefined') {
                         $scope.$parent[clickHandlerFunctionName](row);
+                    }
+                };
+
+                $scope.getRowColor = function(index, row) {
+                    if(row.rowSelected) {
+                        return fhatMessageBus.selectedRowColor;
+                    } else {
+                        if(index % 2 === 0) {
+                            return fhatMessageBus.evenRowColor;
+                        } else {
+                            return fhatMessageBus.oddRowColor;
+                        }
                     }
                 };
             }],
@@ -89,7 +101,7 @@ angular.module('fhat', [])
             }
         };
     }])
-    .service('fhatManualCompiler', function() {
+    .service('fhatManualCompiler', ['fhatMessageBus', function(fhatMessageBus) {
         var self = this;
 
         self.compileRow = function(tElement, tAttrs, isHeader) {
@@ -146,8 +158,12 @@ angular.module('fhat', [])
             } else {
                 var selectedBackgroundColor = '';
 
-                if(typeof(tAttrs.selectedColor) !== 'undefined') {
-                    selectedBackgroundColor = 'style="background-color: {{ row.backgroundColor }}"';
+                fhatMessageBus.selectedRowColor = tAttrs.selectedColor;
+                fhatMessageBus.evenRowColor = tAttrs.evenColor;
+                fhatMessageBus.oddRowColor = tAttrs.oddColor;
+
+                if(typeof(tAttrs.selectedColor) !== 'undefined' || typeof(tAttrs.evenColor) !== 'undefined' || typeof(tAttrs.oddColor) !== 'undefined' ) {
+                    selectedBackgroundColor = 'ng-style="{ backgroundColor: getRowColor($index, row) }"';
                 }
 
                 // add the ng-repeat and row selection click handler to each row
@@ -163,7 +179,7 @@ angular.module('fhat', [])
             // replace the original template with the manually replaced and transcluded version
             tElement.replaceWith(rowTemplate);
         };
-    })
+    }])
 
     .service('fhatMessageBus', function() {
         var self = this;
@@ -177,6 +193,11 @@ angular.module('fhat', [])
 
         // store the columns sort direction mapping
         self.sortDirectionToColumnMap = {};
+
+        // store selected, even and odd row background colors
+        self.selectedRowColor = '';
+        self.evenRowColor = '';
+        self.oddRowColor = '';
 
         return self;
     });

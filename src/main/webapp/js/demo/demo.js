@@ -3,14 +3,19 @@ angular.module('demo', ['fhat'])
         var numbers = [];
         $scope.selectedRow = {};
 
-        for(var i = 0; i < 50; i++) {
-            numbers.push({
-               id: i,
-               name: 'name ' + i
-            });
-        }
+        // TODO: fix this
+        $scope.addFiftyRows = function(startIndex) {
+            var endIndex = startIndex + 50;
 
-        $scope.listOfNumbers = numbers;
+            for(var i = startIndex; i < endIndex; i++) {
+                numbers.push({
+                   id: i,
+                   name: 'name ' + i
+                });
+            }
+
+            $scope.listOfNumbers = numbers;
+        }
 
         $scope.handleRowSelection = function(row) {
             $scope.selectedRow = row;
@@ -21,4 +26,6 @@ angular.module('demo', ['fhat'])
                 id: parseInt($scope.listOfNumbers.length, 10) + 1,
                 name: 'name ' + $scope.listOfNumbers.length + 1 })
         };
+
+        $scope.addFiftyRows(1);
     }]);
