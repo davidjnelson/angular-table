@@ -1,10 +1,4 @@
 angular.module('fhat', [])
-    .run(['$window', 'fhatResizeState', function($window, fhatResizeState) {
-        angular.element($window).bind('resize', function() {
-            // TODO: debounce me
-            fhatResizeState.debouncedResizeFiring = true;
-        });
-    }])
     .directive('fhat', ['fhatMessageBus', function(fhatMessageBus) {
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.  see below.
@@ -34,7 +28,8 @@ angular.module('fhat', [])
                 $scope.fhatMessageBus = fhatMessageBus;
 
                 $scope.setSortExpression = function(columnName) {
-                    // TODO: consider splitting these out into seperate services so two events are not handled here in the message bus watch in fhat-row
+                    // there doesn't seem to be a way to prevent the watch from firing twice, even if we do both assignments in one operation:
+                    // see (by design): https://github.com/angular/angular.js/issues/1305
                     fhatMessageBus.sortExpression = columnName;
                     fhatMessageBus.sortFiring = true;
 
@@ -55,7 +50,8 @@ angular.module('fhat', [])
             }
         };
     }])
-    .directive('fhatRow', ['fhatManualCompiler', 'fhatMessageBus', 'fhatDebouncedResizer', function(fhatManualCompiler, fhatMessageBus, fhatDebouncedResizer) {
+    .directive('fhatRow', ['fhatManualCompiler', 'fhatMessageBus', 'fhatDebouncedResizer', '$window', 'fhatDebounce',
+        function(fhatManualCompiler, fhatMessageBus, fhatDebouncedResizer, $window, fhatDebounce) {
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.  see below.
             restrict: 'E',
@@ -101,15 +97,30 @@ angular.module('fhat', [])
                 return function(scope, iElement) {
                     scope.fhatMessageBus = fhatMessageBus;
 
-                    var scrollingContainerHeight = iElement[0].clientHeight - fhatMessageBus.headerOffsetHeight + 'px';
+                    fhatDebounce.debounce()
 
-                    iElement.css('height', scrollingContainerHeight);
+                    angular.element($window).bind('resize', fhatDebounce.debounce(function() {
+                        // must apply since the browswer resize event is not being seen by the digest process
+                        scope.$apply(function() {
+                            fhatMessageBus.debouncedResizeFiring = true;
+                        });
+                    }, 50));
+
+                    scope.resizeScrollingContainerHeight = function() {
+                        var scrollingContainerHeight = iElement[0].clientHeight - fhatMessageBus.headerOffsetHeight + 'px';
+
+                        iElement.css('height', scrollingContainerHeight);
+                    };
 
                     scope.$watch('fhatMessageBus', function(newValue, oldValue) {
                         console.log('watch handler fired');
 
-                        // scroll to top when sort applied
+                        if(fhatMessageBus.debouncedResizeFiring) {
+                            fhatMessageBus.debouncedResizeFiring = false;
+                            scope.resizeScrollingContainerHeight();
+                        }
 
+                        // scroll to top when sort applied
                         if(fhatMessageBus.sortFiring) {
                             // turn off the sortFiring tracking before manipulating the dom so we don't have wasted events
                             fhatMessageBus.sortFiring = false;
@@ -117,10 +128,52 @@ angular.module('fhat', [])
                             iElement[0].scrollTop = 0;
                         }
                     }, true);
+
+                    // adjust the scrolling container height when the directive initially links too
+                    scope.resizeScrollingContainerHeight();
                 };
             }
         };
     }])
+
+    .service('fhatDebounce', function() {
+        var self = this;
+
+        // debounce() method is slightly modified version of:
+        // Underscore.js 1.4.4
+        // http://underscorejs.org
+        // (c) 2009-2013 Jeremy Ashkenas, DocumentCloud Inc.
+        // Underscore may be freely distributed under the MIT license.
+        self.debounce = function(func, wait, immediate) {
+            var timeout,
+                result;
+
+            return function() {
+                var context = this,
+                    args = arguments,
+                    callNow = immediate && !timeout;
+
+                var later = function() {
+                    timeout = null;
+
+                    if (!immediate) {
+                        result = func.apply(context, args);
+                    }
+                };
+
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+
+                if (callNow) {
+                    result = func.apply(context, args);
+                }
+
+                return result;
+            };
+        };
+
+        return self;
+    })
 
     .service('fhatDebouncedResizer', function() {
         var self = this;
@@ -141,14 +194,6 @@ angular.module('fhat', [])
 
         return self;
     })*/
-
-    .service('fhatResizeState', function() {
-        var self = this;
-
-        self.debouncedResizeFiring = false;
-
-        return self;
-    })
 
     .service('fhatManualCompiler', ['fhatMessageBus', function(fhatMessageBus) {
         var self = this;
@@ -254,6 +299,9 @@ angular.module('fhat', [])
 
         // store the offset height of the header so we know what the height of the scrolling container should be.
         self.headerOffsetHeight = 0;
+
+        // track the debounced window resize event
+        self.debouncedResizeFiring = false;
 
         return self;
     });
