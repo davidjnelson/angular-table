@@ -1,3 +1,7 @@
+body {
+    font-family: arial;
+}
+
 .demoTable {
     float: left;
     margin: 0;
@@ -22,5 +26,20 @@
 }
 
 .demoHeaderColumn {
-    color: gray;
+    background-color: #cccccc;
+    border-bottom: 0;
+}
+
+.demoFarRightHeaderColumn {
+    background-color: #cccccc;
+    border-bottom: 0;
+    border-right: 0;
+}
+
+.demoHeaderText {
+    display: inline-block;
+}
+
+.demoFarRightColumn {
+    border-right: 0;
 }

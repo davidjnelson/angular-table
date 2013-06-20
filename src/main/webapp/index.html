@@ -8,26 +8,23 @@
 
         <angular-table model="listOfNumbers" default-sort-column="id" class="demoTable">
             <header-row>
-                <header-column sortable="true" sort-field-name="id">
-                    <div style="display: inline-block;">Id</div>
+                <header-column sortable="true" sort-field-name="id" class="demoHeaderColumn">
+                    <div class="demoHeaderText">Id</div>
                     <sort-arrow-ascending></sort-arrow-ascending>
                     <sort-arrow-descending></sort-arrow-descending>
                 </header-column>
-                <header-column sortable="false" sort-field-name="name">
-                    <i>Name</i></div>
-                </header-column>
-                <header-column sortable="true" sort-field-name="street">
+                <header-column sortable="false" sort-field-name="name" class="demoHeaderColumn">Name</header-column>
+                <header-column sortable="true" sort-field-name="street" class="demoFarRightHeaderColumn">
                     <sort-arrow-ascending></sort-arrow-ascending>
-                    <sort-arrow-descending></sort-arrow-descending> <div style="display: inline-block;">Street</div>
+                    <sort-arrow-descending></sort-arrow-descending>
+                    <div  class="demoHeaderText">Street</div>
                 </header-column>
             </header-row>
 
             <row on-selected="handleRowSelection(row)" selected-color="#87cefa" even-color="#ffffff" odd-color="#eeeeee">
-                <column><b>{{ row.id }}</b></column>
-                <column>
-                    {{ row.name }}
-                </column>
-                <column>{{ row.street }}</input></column>
+                <column>{{ row.id }}</column>
+                <column>{{ row.name }}</column>
+                <column class="demoFarRightColumn">{{ row.street }}</input></column>
             </row>
         </angular-table>
 
@@ -49,5 +46,4 @@
         <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 
     </body>
-
 </html>
