@@ -16,7 +16,9 @@ Quick Start
             <sort-arrow-ascending></sort-arrow-ascending>
             <sort-arrow-descending></sort-arrow-descending>
         </header-column>
-        <header-column sortable="false" sort-field-name="name" class="demoHeaderColumn">Name</header-column>
+        <header-column sortable="false" sort-field-name="name" class="demoHeaderColumn">
+            Name
+        </header-column>
         <header-column sortable="true" sort-field-name="street" class="demoFarRightHeaderColumn">
             <div style="display: inline-block;">Street</div>
             <sort-arrow-ascending></sort-arrow-ascending>
@@ -24,7 +26,8 @@ Quick Start
         </header-column>
     </header-row>
 
-    <row on-selected="handleRowSelection(row)" selected-color="#87cefa" even-color="#ffffff" odd-color="#eeeeee">
+    <row on-selected="handleRowSelection(row)" selected-color="#87cefa" even-color="#ffffff" 
+        odd-color="#eeeeee">
         <column>{{ row.id }}</column>
         <column>{{ row.name }}</column>
         <column class="demoFarRightColumn">{{ row.street }}</input></column>
