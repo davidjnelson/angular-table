@@ -1,2 +1,2 @@
-fixed-header-angular-table
-==========================
+Angular Table
+=============
