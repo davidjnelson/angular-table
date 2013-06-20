@@ -18,14 +18,18 @@ angular.module('fhat', [])
 
                 // return linking function
                 return function(scope, iElement) {
+                    scope.fhatResizeState = fhatResizeState;
+
                     var storeComputedHeight = function() {
-                        fhatScrollingContainerHeightState.outerContainerComputedHeight = fhatJqLiteExtension.getComputedHeight(iElement[0]);
+                        fhatScrollingContainerHeightState.outerContainerComputedHeight = fhatJqLiteExtension.getComputedHeightAsNumber(iElement[0]);
                     };
 
                     // store the computed height on resize
                     scope.$watch('fhatResizeState', function(oldValue, newValue) {
+                        console.log('fhatResizeState watch handler fired');
+
                         storeComputedHeight();
-                    });
+                    }, true);
 
                     // store the computed height on load
                     storeComputedHeight();
@@ -61,7 +65,21 @@ angular.module('fhat', [])
 
                 // return a linking function
                 return function(scope, iElement) {
-                    fhatScrollingContainerHeightState.headerComputedHeight = fhatJqLiteExtension.getComputedHeight(iElement[0]);
+                    scope.fhatResizeState = fhatResizeState;
+
+                    var storeComputedHeight = function(propertyName) {
+                        fhatScrollingContainerHeightState.headerComputedHeight = fhatJqLiteExtension.getComputedHeightAsNumber(iElement[0]);
+                    };
+
+                    // store the computed height on resize
+                    scope.$watch('fhatResizeState', function(oldValue, newValue) {
+                        console.log('fhatResizeState watch handler fired');
+
+                        storeComputedHeight();
+                    }, true);
+
+                    // store the computed height on load
+                    storeComputedHeight();
                 };
             }
         };
@@ -111,35 +129,32 @@ angular.module('fhat', [])
 
                 // return a linking function
                 return function(scope, iElement) {
-                    scope.fhatResizeState = fhatResizeState;
+                    scope.fhatScrollingContainerHeightState = fhatScrollingContainerHeightState;
                     scope.fhatSortState = fhatSortState;
 
                     angular.element($window).bind('resize', fhatDebounce.debounce(function() {
                         // must apply since the browswer resize event is not being seen by the digest process
                         scope.$apply(function() {
-                            fhatResizeState.debouncedResizeFiring = true;
+                            // flip the boolean to trigger the watches
+                            fhatResizeState.debouncedResizeFiring = !fhatResizeState.debouncedResizeFiring;
                         });
                     }, 50));
 
-                    scope.$watch('fhatResizeState', function(newValue, oldValue) {
+                    scope.$watch('fhatScrollingContainerHeightState', function(newValue, oldValue) {
                         // this gets called n times until the model settles.
                         // it's typically two, but processing in this function must be idempotent and shouldn't
                         // rely on it being two.
 
-                        console.log('fhatResizeState watch handler fired');
+                        console.log('fhatScrollingContainerHeightState watch handler fired');
 
-                        if(fhatResizeState.debouncedResizeFiring) {
-                            fhatResizeState.debouncedResizeFiring = false;
+                        // get the padding, and border and height for the fhatContainer, which we stored earlier, and
+                        // add subtract the padding, border and height of the fhatHeaderTableContainer
+                        // then set the fhatTableContainer height to that value, storing it so we don't re-apply it
 
-                            // get the padding, and border and height for the fhatContainer, which we stored earlier, and
-                            // add subtract the padding, border and height of the fhatHeaderTableContainer
-                            // then set the fhatTableContainer height to that value, storing it so we don't re-apply it
-
-                            var newScrollingContainerHeight =
-                                fhatScrollingContainerHeightState.outerContainerComputedHeight -
-                                fhatScrollingContainerHeightState.headerComputedHeight;
-                            iElement.css('height', newScrollingContainerHeight + 'px');
-                        }
+                        var newScrollingContainerHeight =
+                            fhatScrollingContainerHeightState.outerContainerComputedHeight -
+                            fhatScrollingContainerHeightState.headerComputedHeight;
+                        iElement.css('height', newScrollingContainerHeight + 'px');
                     }, true);
 
                      scope.$watch('fhatSortState', function(newValue, oldValue) {
@@ -212,7 +227,7 @@ angular.module('fhat', [])
             return parseInt(document.defaultView.getComputedStyle(rawDomElement, '').getPropertyValue(property).replace('px', ''), 10);
         };
 
-        self.getComputedHeight = function(rawDomElement, property) {
+        self.getComputedHeightAsNumber = function(rawDomElement, property) {
             return getComputedStyleAsNumber(rawDomElement, 'height');
         };
 
