@@ -6,19 +6,19 @@
 
     <body ng-controller="demoController">
 
-        <fhat model="listOfNumbers" default-sort-column="id" class="demoFhatTable" style="border: 10px solid; margin: 10px; padding: 10px;">
+        <fhat model="listOfNumbers" default-sort-column="id" class="demoFhatTable" style="border: 10px solid; margin-left: 10px; margin-bottom: 10px; padding: 10px;">
             <fhat-header-row style="border: 10px; margin: 10px; padding: 10px;">
                 <fhat-header-column sortable="true" sort-field-name="id"
-                                    style="background-color: deepskyblue; width:40%; border: 10px solid; margin: 10px; padding: 10px;">
+                                    style="background-color: deepskyblue; width:40%; border: 10px solid; margin: 10px;">
                     <div style="display: inline-block;">Id {{ 1 + 1 }}</div>
                     <fhat-sort-arrow-ascending></fhat-sort-arrow-ascending>
                     <fhat-sort-arrow-descending></fhat-sort-arrow-descending>
                 </fhat-header-column>
-                <fhat-header-column sortable="false" sort-field-name="name" class="demoHeaderColumn" style="width: 30%; border: 10px solid; margin: 10px; padding: 10px;">
+                <fhat-header-column sortable="false" sort-field-name="name" class="demoHeaderColumn" style="width: 30%; margin: 10px; padding: 10px;">
                     <fhat-sort-arrow-ascending></fhat-sort-arrow-ascending>
                     <fhat-sort-arrow-descending></fhat-sort-arrow-descending> <div style="display: inline-block;"><i>Name</i></div>
                 </fhat-header-column>
-                <fhat-header-column sortable="true" sort-field-name="street" style="width: 30%; border: 10px solid; margin: 10px; padding: 10px;">
+                <fhat-header-column sortable="true" sort-field-name="street" style="width: 30%; border: 10px solid; padding: 10px;">
                     <fhat-sort-arrow-ascending></fhat-sort-arrow-ascending>
                     <fhat-sort-arrow-descending></fhat-sort-arrow-descending> <div style="display: inline-block;">Street</div>
                 </fhat-header-column>
@@ -26,11 +26,11 @@
 
             <fhat-row on-selected="handleRowSelection(row)" selected-color="#87cefa" even-color="#ffffff" odd-color="#eeeeee" class="demoRow"
                       style=" border: 10px solid; margin: 10px; padding: 10px;">
-                <fhat-column style="font-family: courier; width:40%; border: 10px solid; margin: 10px; padding: 10px;"><b>{{ row.id }}</b></fhat-column>
-                <fhat-column style="background-color: lemonchiffon; width: 30%; border: 10px solid; margin: 10px; padding: 10px;">
+                <fhat-column style="font-family: courier; width:40%; margin: 10px; padding: 10px;"><b>{{ row.id }}</b></fhat-column>
+                <fhat-column style="background-color: lemonchiffon; width: 30%; border: 10px solid; margin: 10px;">
                     <input type="text" ng-model="row.name"></input>
                 </fhat-column>
-                <fhat-column style="width: 30%; border: 10px solid; margin: 10px; padding: 10px;">{{ row.street }}</input></fhat-column>
+                <fhat-column style="width: 30%; border: 10px solid; padding: 10px;">{{ row.street }}</input></fhat-column>
             </fhat-row>
         </fhat>
 
