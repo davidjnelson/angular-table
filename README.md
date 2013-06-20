@@ -1,6 +1,38 @@
 Angular Table
 =============
 
+Quick Start
+-----------
+
+* include angular.js, angular-table.js, and angular-table.css.
+* Put this in your template: 
+
+```html
+
+<angular-table model="[ { id: 1, name: 'Bob', street: '1 street ave' } ]" default-sort-column="id">
+    <header-row>
+        <header-column sortable="true" sort-field-name="id">
+            <div style="display: inline-block;">Id</div>
+            <sort-arrow-ascending></sort-arrow-ascending>
+            <sort-arrow-descending></sort-arrow-descending>
+        </header-column>
+        <header-column sortable="false" sort-field-name="name" class="demoHeaderColumn">Name</header-column>
+        <header-column sortable="true" sort-field-name="street" class="demoFarRightHeaderColumn">
+            <div style="display: inline-block;">Street</div>
+            <sort-arrow-ascending></sort-arrow-ascending>
+            <sort-arrow-descending></sort-arrow-descending>
+        </header-column>
+    </header-row>
+
+    <row on-selected="handleRowSelection(row)" selected-color="#87cefa" even-color="#ffffff" odd-color="#eeeeee">
+        <column>{{ row.id }}</column>
+        <column>{{ row.name }}</column>
+        <column class="demoFarRightColumn">{{ row.street }}</input></column>
+    </row>
+</angular-table>
+
+```
+
 An angular directive for a table with fixed, sortable headers, row selection, row even/odd coloring, 
 which automatically stays the correct height relative to its container when the browser is resized. 
 No javascript code required; the api is a 100% declarative dsl. 
