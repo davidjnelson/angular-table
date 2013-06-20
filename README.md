@@ -24,6 +24,7 @@ Features:
 * row even/odd coloring
 * rows are bound to a model, which is simply an array of your objects, allowing for simple customization 
 and data loading
+* enable / disable sorting of columns
 * when the browser is resized or data is added / removed from the bound model, as scrollbars appear / disappear 
 the fixed header columns adjust their width to pixel perfection.
 * when the browser is resized or data is added / removed from the bound model, the height of the scrolling
@@ -36,6 +37,7 @@ Why Not Use ng-grid or smart table?
 
 While I deeply respect the work these folks have done, there were some issues I had that prevented me from using either.  
 I originally started with ng-grid, and really wanted to use it.
+
 Smart Table
 -----------
 
@@ -67,6 +69,6 @@ Discuss on Hacker News:
 
 
 
-Follow me:
+Follow me on Twitter:
 https://twitter.com/david_j_nelson
 
