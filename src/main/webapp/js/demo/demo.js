@@ -1,4 +1,4 @@
-angular.module('demo', ['fhat'])
+angular.module('demo', ['angular-table'])
     .controller('demoController', ['$scope', function($scope) {
         $scope.selectedRow = {};
         $scope.listOfNumbers = [];

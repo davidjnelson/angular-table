@@ -1,35 +1,33 @@
-angular.module('fhat', [])
-    .directive('fhat', ['fhatScrollingContainerHeightState', 'fhatJqLiteExtension', 'fhatSortState', 'fhatResizeState', 'fhatTemplateStaticState',
-        function(fhatScrollingContainerHeightState, fhatJqLiteExtension, fhatSortState, fhatResizeState, fhatTemplateStaticState) {
+angular.module('angular-table', [])
+    .directive('angularTable', ['ScrollingContainerHeightState', 'JqLiteExtension', 'SortState', 'ResizeState',
+        function(ScrollingContainerHeightState, JqLiteExtension, SortState, ResizeState) {
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.
             restrict: 'E',
             // manually transclude and replace the template to work around not being able to have a template with td or tr as a root element
             // see bug: https://github.com/angular/angular.js/issues/1459
             compile: function (tElement, tAttrs) {
-                fhatSortState.sortExpression = tAttrs.defaultSortColumn;
+                SortState.sortExpression = tAttrs.defaultSortColumn;
 
-                // find whatever classes were passed into the fhat, and merge them with the built in classes for the container div
-                tElement.addClass('fhatContainer');
+                // find whatever classes were passed into the angular-table, and merge them with the built in classes for the container div
+                tElement.addClass('angularTableContainer');
 
-                var rowTemplate = tElement[0].outerHTML.replace('<fhat', '<div');
-                rowTemplate = rowTemplate.replace('</fhat>', '</div>');
+                var rowTemplate = tElement[0].outerHTML.replace('<angular-table', '<div');
+                rowTemplate = rowTemplate.replace('</angular-table>', '</div>');
                 tElement.replaceWith(rowTemplate);
 
                 // return linking function
                 return function(scope, iElement) {
-                    scope.fhatResizeState = fhatResizeState;
+                    scope.ResizeState = ResizeState;
 
                     var storeComputedHeight = function() {
-                        fhatScrollingContainerHeightState.outerContainerComputedHeight = fhatJqLiteExtension.getComputedHeightAsFloat(iElement[0]);
+                        ScrollingContainerHeightState.outerContainerComputedHeight = JqLiteExtension.getComputedHeightAsFloat(iElement[0]);
                     };
 
                     // store the computed height on resize
                     // watches get called n times until the model settles. it's typically one or two, but processing in the functions
                     // must be idempotent and as such shouldn't rely on it being any specific number.
-                    scope.$watch('fhatResizeState', function(oldValue, newValue) {
-                        console.log('fhatResizeState watch handler fired');
-
+                    scope.$watch('ResizeState', function() {
                         storeComputedHeight();
                     }, true);
 
@@ -42,48 +40,46 @@ angular.module('fhat', [])
             }
         };
     }])
-    .directive('fhatHeaderRow', ['fhatManualCompiler', 'fhatScrollingContainerHeightState', 'fhatJqLiteExtension', 'fhatSortState', 'fhatResizeState', 'fhatScrollingContainerWidthState',
-        function(fhatManualCompiler, fhatScrollingContainerHeightState, fhatJqLiteExtension, fhatSortState, fhatResizeState, fhatScrollingContainerWidthState) {
+    .directive('headerRow', ['ManualCompiler', 'ScrollingContainerHeightState', 'JqLiteExtension', 'SortState', 'ResizeState', 'ScrollingContainerWidthState',
+        function(ManualCompiler, ScrollingContainerHeightState, JqLiteExtension, SortState, ResizeState, ScrollingContainerWidthState) {
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.
             restrict: 'E',
             controller: ['$scope', '$parse', function($scope, $parse) {
-                $scope.fhatSortState = fhatSortState;
+                $scope.SortState = SortState;
 
                 $scope.setSortExpression = function(columnName) {
-                    fhatSortState.sortExpression = columnName;
+                    SortState.sortExpression = columnName;
 
                     // track sort directions by sorted column for a better ux
-                    fhatSortState.sortDirectionToColumnMap[fhatSortState.sortExpression] = !fhatSortState.sortDirectionToColumnMap[fhatSortState.sortExpression];
+                    SortState.sortDirectionToColumnMap[SortState.sortExpression] = !SortState.sortDirectionToColumnMap[SortState.sortExpression];
                 };
             }],
             // manually transclude and replace the template to work around not being able to have a template with td or tr as a root element
             // see bug: https://github.com/angular/angular.js/issues/1459
             compile: function (tElement, tAttrs) {
-                fhatManualCompiler.compileRow(tElement, tAttrs, true);
+                ManualCompiler.compileRow(tElement, tAttrs, true);
 
                 // return a linking function
                 return function(scope, iElement) {
-                    scope.fhatResizeState = fhatResizeState;
-                    scope.fhatScrollingContainerWidthState = fhatScrollingContainerWidthState;
+                    scope.ResizeState = ResizeState;
+                    scope.ScrollingContainerWidthState = ScrollingContainerWidthState;
 
                     var storeComputedHeight = function() {
-                        fhatScrollingContainerHeightState.headerComputedHeight = fhatJqLiteExtension.getComputedHeightAsFloat(iElement[0]);
+                        ScrollingContainerHeightState.headerComputedHeight = JqLiteExtension.getComputedHeightAsFloat(iElement[0]);
                     };
 
                     // store the computed height on resize
                     // watches get called n times until the model settles. it's typically one or two, but processing in the functions
                     // must be idempotent and as such shouldn't rely on it being any specific number.
-                    scope.$watch('fhatResizeState', function(oldValue, newValue) {
-                        console.log('fhatResizeState watch handler fired');
-
+                    scope.$watch('ResizeState', function() {
                         storeComputedHeight();
                     }, true);
 
                     // update the header width when the scrolling container's width changes due to a scrollbar appearing
                     // watches get called n times until the model settles. it's typically one or two, but processing in the functions
                     // must be idempotent and as such shouldn't rely on it being any specific number.
-                    scope.$watch('fhatScrollingContainerWidthState', function(newValue, oldValue) {
+                    scope.$watch('ScrollingContainerWidthState', function(newValue) {
                         iElement.css('width', newValue.scrollingContainerComputedWidth + 'px');
                     }, true);
 
@@ -93,25 +89,25 @@ angular.module('fhat', [])
             }
         };
     }])
-    .directive('fhatRow', ['fhatManualCompiler', 'fhatResizeState', '$window', 'fhatDebounce', 'fhatTemplateStaticState', 'fhatRowState', 'fhatSortState',
-        'fhatScrollingContainerHeightState', 'fhatScrollingContainerWidthState', 'fhatJqLiteExtension',
-        function(fhatManualCompiler, fhatResizeState, $window, fhatDebounce, fhatTemplateStaticState, fhatRowState, fhatSortState, fhatScrollingContainerHeightState,
-            fhatScrollingContainerWidthState, fhatJqLiteExtension) {
+    .directive('row', ['ManualCompiler', 'ResizeState', '$window', 'Debounce', 'TemplateStaticState', 'RowState', 'SortState',
+        'ScrollingContainerHeightState', 'ScrollingContainerWidthState', 'JqLiteExtension',
+        function(ManualCompiler, ResizeState, $window, Debounce, TemplateStaticState, RowState, SortState, ScrollingContainerHeightState,
+            ScrollingContainerWidthState, JqLiteExtension) {
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.
             restrict: 'E',
             controller: ['$scope', function($scope) {
-                $scope.sortExpression = fhatSortState.sortExpression;
+                $scope.sortExpression = SortState.sortExpression;
 
                 $scope.handleClick = function(row, parentScopeClickHandler, selectedRowBackgroundColor) {
                     var clickHandlerFunctionName = parentScopeClickHandler.replace('(row)', '');
 
                     if(selectedRowBackgroundColor !== 'undefined') {
-                        fhatRowState.previouslySelectedRow.rowSelected = false;
+                        RowState.previouslySelectedRow.rowSelected = false;
 
                         row.rowSelected = true;
 
-                        fhatRowState.previouslySelectedRow = row;
+                        RowState.previouslySelectedRow = row;
                     }
 
                     if(clickHandlerFunctionName !== 'undefined') {
@@ -121,12 +117,12 @@ angular.module('fhat', [])
 
                 $scope.getRowColor = function(index, row) {
                     if(row.rowSelected) {
-                        return fhatTemplateStaticState.selectedRowColor;
+                        return TemplateStaticState.selectedRowColor;
                     } else {
                         if(index % 2 === 0) {
-                            return fhatTemplateStaticState.evenRowColor;
+                            return TemplateStaticState.evenRowColor;
                         } else {
-                            return fhatTemplateStaticState.oddRowColor;
+                            return TemplateStaticState.oddRowColor;
                         }
                     }
                 };
@@ -134,49 +130,45 @@ angular.module('fhat', [])
             // manually transclude and replace the template to work around not being able to have a template with td or tr as a root element
             // see bug: https://github.com/angular/angular.js/issues/1459
             compile: function (tElement, tAttrs) {
-                fhatRowState.rowSelectedBackgroundColor = tAttrs.selectedColor;
+                RowState.rowSelectedBackgroundColor = tAttrs.selectedColor;
 
-                fhatManualCompiler.compileRow(tElement, tAttrs, false);
+                ManualCompiler.compileRow(tElement, tAttrs, false);
 
                 // return a linking function
                 return function(scope, iElement) {
-                    scope.fhatScrollingContainerHeightState = fhatScrollingContainerHeightState;
-                    scope.fhatSortState = fhatSortState;
+                    scope.ScrollingContainerHeightState = ScrollingContainerHeightState;
+                    scope.SortState = SortState;
 
                     var storeComputedWidth = function() {
-                        fhatScrollingContainerWidthState.scrollingContainerComputedWidth = fhatJqLiteExtension.getComputedWidthAsFloat(iElement[0]);
+                        ScrollingContainerWidthState.scrollingContainerComputedWidth = JqLiteExtension.getComputedWidthAsFloat(iElement[0]);
                     };
 
-                    angular.element($window).bind('resize', fhatDebounce.debounce(function() {
+                    angular.element($window).bind('resize', Debounce.debounce(function() {
                         // don't need to apply since we're just reading the dom
                         storeComputedWidth();
 
                         // must apply since the browser resize event is not being seen by the digest process
                         scope.$apply(function() {
                             // flip the boolean to trigger the watches
-                            fhatResizeState.debouncedResizeFiring = !fhatResizeState.debouncedResizeFiring;
+                            ResizeState.debouncedResizeFiring = !ResizeState.debouncedResizeFiring;
                         });
                     }, 50));
 
-                    // when the computed height for the fhatContainer and fhatHeaderTableContainer change,
-                    // set the fhatTableContainer height to fhatContainer computed height - fhatHeaderTableContainer computed height
+                    // when the computed height for the angularTableContainer and angularTableHeaderTableContainer change,
+                    // set the angularTableTableContainer height to angularTableContainer computed height - angularTableHeaderTableContainer computed height
                     // watches get called n times until the model settles. it's typically one or two, but processing in the functions
                     // must be idempotent and as such shouldn't rely on it being any specific number.
-                    scope.$watch('fhatScrollingContainerHeightState', function(newValue, oldValue) {
-                        console.log('fhatScrollingContainerHeightState watch handler fired');
-
+                    scope.$watch('ScrollingContainerHeightState', function() {
                         var newScrollingContainerHeight =
-                            fhatScrollingContainerHeightState.outerContainerComputedHeight -
-                            fhatScrollingContainerHeightState.headerComputedHeight;
+                            ScrollingContainerHeightState.outerContainerComputedHeight -
+                            ScrollingContainerHeightState.headerComputedHeight;
                         iElement.css('height', newScrollingContainerHeight + 'px');
                     }, true);
 
                     // scroll to top when sort applied
                     // watches get called n times until the model settles. it's typically one or two, but processing in the functions
                     // must be idempotent and as such shouldn't rely on it being any specific number.
-                    scope.$watch('fhatSortState', function(newValue, oldValue) {
-                        console.log('fhatSortState watch handler fired');
-
+                    scope.$watch('SortState', function() {
                         iElement[0].scrollTop = 0;
                     }, true);
 
@@ -186,13 +178,13 @@ angular.module('fhat', [])
                     }, true);
 
                     // adjust the scrolling container height when the directive initially links too
-                    fhatResizeState.debouncedResizeFiring = true;
+                    ResizeState.debouncedResizeFiring = true;
                 };
             }
         };
     }])
 
-    .service('fhatDebounce', function() {
+    .service('Debounce', function() {
         var self = this;
 
         // debounce() method is slightly modified version of:
@@ -231,7 +223,7 @@ angular.module('fhat', [])
         return self;
     })
 
-    .service('fhatJqLiteExtension', ['$window', function($window) {
+    .service('JqLiteExtension', ['$window', function($window) {
         var self = this;
 
         // TODO: make this work with IE8<, android 3<, and ios4<: http://caniuse.com/getcomputedstyle
@@ -251,7 +243,7 @@ angular.module('fhat', [])
         return self;
     }])
 
-    .service('fhatManualCompiler', ['fhatTemplateStaticState', function(fhatTemplateStaticState) {
+    .service('ManualCompiler', ['TemplateStaticState', function(TemplateStaticState) {
         var self = this;
 
         self.compileRow = function(tElement, tAttrs, isHeader) {
@@ -263,24 +255,24 @@ angular.module('fhat', [])
                 headerDash = 'header-'
             }
 
-            // find whatever classes were passed into the fhat-row, and merge them with the built in classes for the tr
-            tElement.addClass('fhat' + headerUppercase + 'Row');
+            // find whatever classes were passed into the row, and merge them with the built in classes for the tr
+            tElement.addClass('angularTable' + headerUppercase + 'Row');
 
-            // find whatever classes were passed into each fhat-column, and merge them with the built in classes for the td
-            tElement.children().addClass('fhat' + headerUppercase + 'Column');
+            // find whatever classes were passed into each column, and merge them with the built in classes for the td
+            tElement.children().addClass('angularTable' + headerUppercase + 'Column');
 
             if(isHeader) {
                 angular.forEach(tElement.children(), function(childColumn, index) {
                     if(angular.element(childColumn).attr('sortable') === 'true') {
                         // add the ascending sort icon
-                        angular.element(childColumn).find('fhat-sort-arrow-descending').attr('ng-show',
-                            'fhatSortState.sortExpression == \'' + angular.element(childColumn).attr('sort-field-name') +
-                            '\' && !fhatSortState.sortDirectionToColumnMap[\'' + angular.element(childColumn).attr('sort-field-name') + '\']').addClass('fhatDefaultSortArrowAscending');
+                        angular.element(childColumn).find('sort-arrow-descending').attr('ng-show',
+                            'SortState.sortExpression == \'' + angular.element(childColumn).attr('sort-field-name') +
+                            '\' && !SortState.sortDirectionToColumnMap[\'' + angular.element(childColumn).attr('sort-field-name') + '\']').addClass('angularTableDefaultSortArrowAscending');
 
                         // add the descending sort icon
-                        angular.element(childColumn).find('fhat-sort-arrow-ascending').attr('ng-show',
-                            'fhatSortState.sortExpression == \'' + angular.element(childColumn).attr('sort-field-name') +
-                            '\' && fhatSortState.sortDirectionToColumnMap[\'' + angular.element(childColumn).attr('sort-field-name') + '\']').addClass('fhatDefaultSortArrowDescending');
+                        angular.element(childColumn).find('sort-arrow-ascending').attr('ng-show',
+                            'SortState.sortExpression == \'' + angular.element(childColumn).attr('sort-field-name') +
+                            '\' && SortState.sortDirectionToColumnMap[\'' + angular.element(childColumn).attr('sort-field-name') + '\']').addClass('angularTableDefaultSortArrowDescending');
 
                         // add the sort click handler
                         angular.element(childColumn).attr('ng-click', 'setSortExpression(\'' +
@@ -292,25 +284,29 @@ angular.module('fhat', [])
                 });
             }
 
-            // replace fhat-row with tr
-            var rowRegexString = 'fhat-' + headerDash + 'row';
-            var rowRegex = new RegExp(rowRegexString, "g");
-            var rowTemplate = tElement[0].outerHTML.replace(rowRegex, 'tr');
+            // replace row with tr
+            if(isHeader) {
+                var rowTemplate = tElement[0].outerHTML.replace('<header-row', '<tr');
+                rowTemplate = rowTemplate.replace('/header-row>', '/tr>')
+            } else {
+                var rowTemplate = tElement[0].outerHTML.replace('<row', '<tr');
+                rowTemplate = rowTemplate.replace('/row>', '/tr>')
+            }
 
-            // replace fhat-column with td
-            var columnRegexString = 'fhat-' + headerDash + 'column';
+            // replace column with td
+            var columnRegexString = headerDash + 'column';
             var columnRegex = new RegExp(columnRegexString, "g");
             rowTemplate = rowTemplate.replace(columnRegex, 'td');
 
             if(isHeader) {
-                rowTemplate = rowTemplate.replace(/fhat-sort-arrow-descending/g, 'div');
-                rowTemplate = rowTemplate.replace(/fhat-sort-arrow-ascending/g, 'div');
+                rowTemplate = rowTemplate.replace(/sort-arrow-descending/g, 'div');
+                rowTemplate = rowTemplate.replace(/sort-arrow-ascending/g, 'div');
             } else {
                 var selectedBackgroundColor = '';
 
-                fhatTemplateStaticState.selectedRowColor = tAttrs.selectedColor;
-                fhatTemplateStaticState.evenRowColor = tAttrs.evenColor;
-                fhatTemplateStaticState.oddRowColor = tAttrs.oddColor;
+                TemplateStaticState.selectedRowColor = tAttrs.selectedColor;
+                TemplateStaticState.evenRowColor = tAttrs.evenColor;
+                TemplateStaticState.oddRowColor = tAttrs.oddColor;
 
                 if(typeof(tAttrs.selectedColor) !== 'undefined' || typeof(tAttrs.evenColor) !== 'undefined' || typeof(tAttrs.oddColor) !== 'undefined' ) {
                     selectedBackgroundColor = 'ng-style="{ backgroundColor: getRowColor($index, row) }"';
@@ -318,20 +314,20 @@ angular.module('fhat', [])
 
                 // add the ng-repeat and row selection click handler to each row
                 rowTemplate = rowTemplate.replace('<tr',
-                    '<tr ng-repeat="row in model | orderBy:fhatSortState.sortExpression:fhatSortState.sortDirectionToColumnMap[fhatSortState.sortExpression]" ' +
+                    '<tr ng-repeat="row in model | orderBy:SortState.sortExpression:SortState.sortDirectionToColumnMap[SortState.sortExpression]" ' +
                         selectedBackgroundColor + ' ng-click="handleClick(row, \'' +
                         tAttrs.onSelected + '\', \'' + tAttrs.selectedColor + '\')" ');
             }
 
             // wrap our rows in a table, and a container div.  the container div will manage the scrolling.
-            rowTemplate = '<div class="fhat' + headerUppercase + 'TableContainer"><table class="fhat' + headerUppercase + 'Table">' + rowTemplate + '</table></div>';
+            rowTemplate = '<div class="angularTable' + headerUppercase + 'TableContainer"><table class="angularTable' + headerUppercase + 'Table">' + rowTemplate + '</table></div>';
 
             // replace the original template with the manually replaced and transcluded version
             tElement.replaceWith(rowTemplate);
         };
     }])
 
-    .service('fhatResizeState', function() {
+    .service('ResizeState', function() {
         var self = this;
 
         // flip a boolean to indicate resize occured.  the value of the property has no meaning.
@@ -340,19 +336,19 @@ angular.module('fhat', [])
         return self;
     })
 
-     .service('fhatScrollingContainerWidthState', function() {
+     .service('ScrollingContainerWidthState', function() {
         var self = this;
 
-        // get the computed width for the outer fhatTableContainer
+        // get the computed width for the outer angularTableTableContainer
         self.scrollingContainerComputedWidth = 0;
 
         return self;
     })
 
-    .service('fhatScrollingContainerHeightState', function() {
+    .service('ScrollingContainerHeightState', function() {
         var self = this;
 
-        // get the padding, border and height for the outer fhatContainer which holds the header table and the rows table
+        // get the padding, border and height for the outer angularTableContainer which holds the header table and the rows table
         self.outerContainerComputedHeight = 0;
 
         // store the offset height plus margin of the header so we know what the height of the scrolling container should be.
@@ -361,7 +357,7 @@ angular.module('fhat', [])
         return self;
     })
 
-    .service('fhatTemplateStaticState', function() {
+    .service('TemplateStaticState', function() {
         var self = this;
 
         // store selected, even and odd row background colors
@@ -372,7 +368,7 @@ angular.module('fhat', [])
         return self;
     })
 
-    .service('fhatRowState', function() {
+    .service('RowState', function() {
         var self = this;
 
         // store a reference to the previously selected row so we can access it without looking it up from the bound model
@@ -382,7 +378,7 @@ angular.module('fhat', [])
         return self;
     })
 
-    .service('fhatSortState', function() {
+    .service('SortState', function() {
         var self = this;
 
         // store the sort expression

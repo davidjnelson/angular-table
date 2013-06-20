@@ -1,10 +1,9 @@
-.demoFhatTable {
+.demoTable {
     float: left;
     margin: 0;
     vertical-align: top;
     height: 50%;
     width: 70%;
-    border: 2px solid gray;
 }
 
 .demoDetailPane {

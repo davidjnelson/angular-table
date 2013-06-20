@@ -1,51 +1,51 @@
-.fhatContainer {
+.angularTableContainer {
     width: 100%;
 }
 
-.fhatHeaderTableContainer {
+.angularTableHeaderTableContainer {
     width: 100%;
 }
 
-.fhatTableContainer {
+.angularTableTableContainer {
     height: 100%;
     width: 100%;
     overflow-y: auto;
 }
 
-.fhatHeaderTable {
+.angularTableHeaderTable {
     width: 100%;
     table-layout: fixed;
     border-collapse: collapse;
     border-spacing: 0;
 }
 
-.fhatTable {
+.angularTableTable {
     width: 100%;
     table-layout: fixed;
     border-collapse: collapse;
     border-spacing: 0;
 }
 
-.fhatHeaderRow {
+.angularTableHeaderRow {
 
 }
 
-.fhatRow {
+.angularTableRow {
     cursor: pointer;
 }
 
-.fhatHeaderColumn {
+.angularTableHeaderColumn {
     padding: 5px;
     border: 1px solid black;
     cursor: pointer;
 }
 
-.fhatColumn {
+.angularTableColumn {
     padding: 5px;
     border: 1px solid black;
 }
 
-.fhatDefaultSortArrowAscending {
+.angularTableDefaultSortArrowAscending {
     width: 0;
 	height: 0;
 	border-left: 5px solid transparent;
@@ -55,7 +55,7 @@
     vertical-align: middle;
 }
 
-.fhatDefaultSortArrowDescending {
+.angularTableDefaultSortArrowDescending {
     width: 0;
 	height: 0;
 	border-left: 5px solid transparent;
