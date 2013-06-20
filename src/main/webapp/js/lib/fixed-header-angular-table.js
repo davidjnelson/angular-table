@@ -1,8 +1,8 @@
 angular.module('fhat', [])
-    .directive('fhat', ['fhatScrollingContainerHeightState', 'fhatJqLiteExtension', 'fhatSortState', 'fhatResizeState',
-        function(fhatScrollingContainerHeightState, fhatJqLiteExtension, fhatSortState, fhatResizeState) {
+    .directive('fhat', ['fhatScrollingContainerHeightState', 'fhatJqLiteExtension', 'fhatSortState', 'fhatResizeState', 'fhatTemplateStaticState',
+        function(fhatScrollingContainerHeightState, fhatJqLiteExtension, fhatSortState, fhatResizeState, fhatTemplateStaticState) {
         return {
-            // only support elements for now to simplify the manual transclusion and replace logic.  see below.
+            // only support elements for now to simplify the manual transclusion and replace logic.
             restrict: 'E',
             // manually transclude and replace the template to work around not being able to have a template with td or tr as a root element
             // see bug: https://github.com/angular/angular.js/issues/1459
@@ -21,10 +21,12 @@ angular.module('fhat', [])
                     scope.fhatResizeState = fhatResizeState;
 
                     var storeComputedHeight = function() {
-                        fhatScrollingContainerHeightState.outerContainerComputedHeight = fhatJqLiteExtension.getComputedHeightAsNumber(iElement[0]);
+                        fhatScrollingContainerHeightState.outerContainerComputedHeight = fhatJqLiteExtension.getComputedHeightAsFloat(iElement[0]);
                     };
 
                     // store the computed height on resize
+                    // watches get called n times until the model settles. it's typically one or two, but processing in the functions
+                    // must be idempotent and as such shouldn't rely on it being any specific number.
                     scope.$watch('fhatResizeState', function(oldValue, newValue) {
                         console.log('fhatResizeState watch handler fired');
 
@@ -40,19 +42,16 @@ angular.module('fhat', [])
             }
         };
     }])
-    .directive('fhatHeaderRow', ['fhatManualCompiler', 'fhatScrollingContainerHeightState', 'fhatJqLiteExtension', 'fhatSortState', 'fhatResizeState',
-        function(fhatManualCompiler, fhatScrollingContainerHeightState, fhatJqLiteExtension, fhatSortState, fhatResizeState) {
+    .directive('fhatHeaderRow', ['fhatManualCompiler', 'fhatScrollingContainerHeightState', 'fhatJqLiteExtension', 'fhatSortState', 'fhatResizeState', 'fhatScrollingContainerWidthState',
+        function(fhatManualCompiler, fhatScrollingContainerHeightState, fhatJqLiteExtension, fhatSortState, fhatResizeState, fhatScrollingContainerWidthState) {
         return {
-            // only support elements for now to simplify the manual transclusion and replace logic.  see below.
+            // only support elements for now to simplify the manual transclusion and replace logic.
             restrict: 'E',
             controller: ['$scope', '$parse', function($scope, $parse) {
                 $scope.fhatSortState = fhatSortState;
 
                 $scope.setSortExpression = function(columnName) {
-                    // there doesn't seem to be a way to prevent the watch from firing twice, even if we do both assignments in one operation:
-                    // see (by design): https://github.com/angular/angular.js/issues/1305
                     fhatSortState.sortExpression = columnName;
-                    fhatSortState.sortFiring = true;
 
                     // track sort directions by sorted column for a better ux
                     fhatSortState.sortDirectionToColumnMap[fhatSortState.sortExpression] = !fhatSortState.sortDirectionToColumnMap[fhatSortState.sortExpression];
@@ -66,16 +65,26 @@ angular.module('fhat', [])
                 // return a linking function
                 return function(scope, iElement) {
                     scope.fhatResizeState = fhatResizeState;
+                    scope.fhatScrollingContainerWidthState = fhatScrollingContainerWidthState;
 
-                    var storeComputedHeight = function(propertyName) {
-                        fhatScrollingContainerHeightState.headerComputedHeight = fhatJqLiteExtension.getComputedHeightAsNumber(iElement[0]);
+                    var storeComputedHeight = function() {
+                        fhatScrollingContainerHeightState.headerComputedHeight = fhatJqLiteExtension.getComputedHeightAsFloat(iElement[0]);
                     };
 
                     // store the computed height on resize
+                    // watches get called n times until the model settles. it's typically one or two, but processing in the functions
+                    // must be idempotent and as such shouldn't rely on it being any specific number.
                     scope.$watch('fhatResizeState', function(oldValue, newValue) {
                         console.log('fhatResizeState watch handler fired');
 
                         storeComputedHeight();
+                    }, true);
+
+                    // update the header width when the scrolling container's width changes due to a scrollbar appearing
+                    // watches get called n times until the model settles. it's typically one or two, but processing in the functions
+                    // must be idempotent and as such shouldn't rely on it being any specific number.
+                    scope.$watch('fhatScrollingContainerWidthState', function(newValue, oldValue) {
+                        iElement.css('width', newValue.scrollingContainerComputedWidth + 'px');
                     }, true);
 
                     // store the computed height on load
@@ -84,10 +93,12 @@ angular.module('fhat', [])
             }
         };
     }])
-    .directive('fhatRow', ['fhatManualCompiler', 'fhatResizeState', '$window', 'fhatDebounce', 'fhatTemplateStaticState', 'fhatRowState', 'fhatSortState', 'fhatScrollingContainerHeightState',
-        function(fhatManualCompiler, fhatResizeState, $window, fhatDebounce, fhatTemplateStaticState, fhatRowState, fhatSortState, fhatScrollingContainerHeightState) {
+    .directive('fhatRow', ['fhatManualCompiler', 'fhatResizeState', '$window', 'fhatDebounce', 'fhatTemplateStaticState', 'fhatRowState', 'fhatSortState',
+        'fhatScrollingContainerHeightState', 'fhatScrollingContainerWidthState', 'fhatJqLiteExtension',
+        function(fhatManualCompiler, fhatResizeState, $window, fhatDebounce, fhatTemplateStaticState, fhatRowState, fhatSortState, fhatScrollingContainerHeightState,
+            fhatScrollingContainerWidthState, fhatJqLiteExtension) {
         return {
-            // only support elements for now to simplify the manual transclusion and replace logic.  see below.
+            // only support elements for now to simplify the manual transclusion and replace logic.
             restrict: 'E',
             controller: ['$scope', function($scope) {
                 $scope.sortExpression = fhatSortState.sortExpression;
@@ -132,24 +143,27 @@ angular.module('fhat', [])
                     scope.fhatScrollingContainerHeightState = fhatScrollingContainerHeightState;
                     scope.fhatSortState = fhatSortState;
 
+                    var storeComputedWidth = function() {
+                        fhatScrollingContainerWidthState.scrollingContainerComputedWidth = fhatJqLiteExtension.getComputedWidthAsFloat(iElement[0]);
+                    };
+
                     angular.element($window).bind('resize', fhatDebounce.debounce(function() {
-                        // must apply since the browswer resize event is not being seen by the digest process
+                        // don't need to apply since we're just reading the dom
+                        storeComputedWidth();
+
+                        // must apply since the browser resize event is not being seen by the digest process
                         scope.$apply(function() {
                             // flip the boolean to trigger the watches
                             fhatResizeState.debouncedResizeFiring = !fhatResizeState.debouncedResizeFiring;
                         });
                     }, 50));
 
+                    // when the computed height for the fhatContainer and fhatHeaderTableContainer change,
+                    // set the fhatTableContainer height to fhatContainer computed height - fhatHeaderTableContainer computed height
+                    // watches get called n times until the model settles. it's typically one or two, but processing in the functions
+                    // must be idempotent and as such shouldn't rely on it being any specific number.
                     scope.$watch('fhatScrollingContainerHeightState', function(newValue, oldValue) {
-                        // this gets called n times until the model settles.
-                        // it's typically two, but processing in this function must be idempotent and shouldn't
-                        // rely on it being two.
-
                         console.log('fhatScrollingContainerHeightState watch handler fired');
-
-                        // get the padding, and border and height for the fhatContainer, which we stored earlier, and
-                        // add subtract the padding, border and height of the fhatHeaderTableContainer
-                        // then set the fhatTableContainer height to that value, storing it so we don't re-apply it
 
                         var newScrollingContainerHeight =
                             fhatScrollingContainerHeightState.outerContainerComputedHeight -
@@ -157,20 +171,18 @@ angular.module('fhat', [])
                         iElement.css('height', newScrollingContainerHeight + 'px');
                     }, true);
 
-                     scope.$watch('fhatSortState', function(newValue, oldValue) {
-                        // this gets called n times until the model settles.
-                        // it's typically two, but processing in this function must be idempotent and shouldn't
-                        // rely on it being two.
-
+                    // scroll to top when sort applied
+                    // watches get called n times until the model settles. it's typically one or two, but processing in the functions
+                    // must be idempotent and as such shouldn't rely on it being any specific number.
+                    scope.$watch('fhatSortState', function(newValue, oldValue) {
                         console.log('fhatSortState watch handler fired');
 
-                        // scroll to top when sort applied
-                        if(fhatSortState.sortFiring) {
-                            // turn off the sortFiring tracking before manipulating the dom so we don't have wasted events
-                            fhatSortState.sortFiring = false;
+                        iElement[0].scrollTop = 0;
+                    }, true);
 
-                            iElement[0].scrollTop = 0;
-                        }
+                    // check for scrollbars and adjust the header table width as needed when the number of bound rows changes
+                    scope.$watch('model', function(newValue, oldValue) {
+                        storeComputedWidth();
                     }, true);
 
                     // adjust the scrolling container height when the directive initially links too
@@ -219,20 +231,25 @@ angular.module('fhat', [])
         return self;
     })
 
-    .service('fhatJqLiteExtension', function() {
+    .service('fhatJqLiteExtension', ['$window', function($window) {
         var self = this;
 
-        // NOTE: this does not support IE8<
-        var getComputedStyleAsNumber = function(rawDomElement, property) {
-            return parseInt(document.defaultView.getComputedStyle(rawDomElement, '').getPropertyValue(property).replace('px', ''), 10);
+        // TODO: make this work with IE8<, android 3<, and ios4<: http://caniuse.com/getcomputedstyle
+        var getComputedStyleAsFloat = function(rawDomElement, property) {
+            var computedValueAsString = $window.getComputedStyle(rawDomElement).getPropertyValue(property).replace('px', '');
+            return parseFloat(computedValueAsString);
         };
 
-        self.getComputedHeightAsNumber = function(rawDomElement, property) {
-            return getComputedStyleAsNumber(rawDomElement, 'height');
+        self.getComputedHeightAsFloat = function(rawDomElement) {
+            return getComputedStyleAsFloat(rawDomElement, 'height');
+        };
+
+        self.getComputedWidthAsFloat = function(rawDomElement) {
+            return getComputedStyleAsFloat(rawDomElement, 'width');
         };
 
         return self;
-    })
+    }])
 
     .service('fhatManualCompiler', ['fhatTemplateStaticState', function(fhatTemplateStaticState) {
         var self = this;
@@ -317,8 +334,17 @@ angular.module('fhat', [])
     .service('fhatResizeState', function() {
         var self = this;
 
-        // track the debounced window resize event
+        // flip a boolean to indicate resize occured.  the value of the property has no meaning.
         self.debouncedResizeFiring = false;
+
+        return self;
+    })
+
+     .service('fhatScrollingContainerWidthState', function() {
+        var self = this;
+
+        // get the computed width for the outer fhatTableContainer
+        self.scrollingContainerComputedWidth = 0;
 
         return self;
     })
@@ -363,12 +389,7 @@ angular.module('fhat', [])
         self.sortExpression = '';
 
         // store the columns sort direction mapping
-        var self = this;
-
         self.sortDirectionToColumnMap = {};
-
-        // track whether sort is firing so we can scroll the grid up to the top
-        self.sortFiring = false;
 
         return self;
     });
