@@ -1,40 +1,48 @@
 angular.module('fhat', [])
-    .directive('fhat', ['fhatMessageBus', function(fhatMessageBus) {
+    .directive('fhat', ['fhatScrollingContainerHeightState', 'fhatJqLiteExtension', 'fhatSortState',
+        function(fhatScrollingContainerHeightState, fhatJqLiteExtension, fhatSortState) {
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.  see below.
             restrict: 'E',
             // manually transclude and replace the template to work around not being able to have a template with td or tr as a root element
             // see bug: https://github.com/angular/angular.js/issues/1459
             compile: function (tElement, tAttrs) {
-                fhatMessageBus.sortExpression = tAttrs.defaultSortColumn;
+                fhatSortState.sortExpression = tAttrs.defaultSortColumn;
 
                 // find whatever classes were passed into the fhat, and merge them with the built in classes for the container div
-                tElement.addClass('fhatTableContainer');
+                tElement.addClass('fhatContainer');
 
                 var rowTemplate = tElement[0].outerHTML.replace('<fhat', '<div');
                 rowTemplate = rowTemplate.replace('</fhat>', '</div>');
                 tElement.replaceWith(rowTemplate);
+
+                // return linking function
+                return function(scope, iElement) {
+                    // get the padding, border and height for the fhatContainer
+                    fhatScrollingContainerHeightState.outerContainerComputedHeight = fhatJqLiteExtension.getComputedHeight(iElement[0]);
+                };
             },
             scope: {
                 model: '='
             }
         };
     }])
-    .directive('fhatHeaderRow', ['fhatManualCompiler', 'fhatMessageBus', function(fhatManualCompiler, fhatMessageBus) {
+    .directive('fhatHeaderRow', ['fhatManualCompiler', 'fhatScrollingContainerHeightState', 'fhatJqLiteExtension', 'fhatSortState',
+        function(fhatManualCompiler, fhatScrollingContainerHeightState, fhatJqLiteExtension, fhatSortState) {
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.  see below.
             restrict: 'E',
             controller: ['$scope', '$parse', function($scope, $parse) {
-                $scope.fhatMessageBus = fhatMessageBus;
+                $scope.fhatSortState = fhatSortState;
 
                 $scope.setSortExpression = function(columnName) {
                     // there doesn't seem to be a way to prevent the watch from firing twice, even if we do both assignments in one operation:
                     // see (by design): https://github.com/angular/angular.js/issues/1305
-                    fhatMessageBus.sortExpression = columnName;
-                    fhatMessageBus.sortFiring = true;
+                    fhatSortState.sortExpression = columnName;
+                    fhatSortState.sortFiring = true;
 
                     // track sort directions by sorted column for a better ux
-                    fhatMessageBus.sortDirectionToColumnMap[fhatMessageBus.sortExpression] = !fhatMessageBus.sortDirectionToColumnMap[fhatMessageBus.sortExpression];
+                    fhatSortState.sortDirectionToColumnMap[fhatSortState.sortExpression] = !fhatSortState.sortDirectionToColumnMap[fhatSortState.sortExpression];
                 };
             }],
             // manually transclude and replace the template to work around not being able to have a template with td or tr as a root element
@@ -44,29 +52,28 @@ angular.module('fhat', [])
 
                 // return a linking function
                 return function(scope, iElement) {
-                    // unfortunately, angular's jqlite has no implemented computed properties, so we can't just call css('height')
-                    fhatMessageBus.headerOffsetHeight = iElement[0].offsetHeight;
+                    fhatScrollingContainerHeightState.headerComputedHeight = fhatJqLiteExtension.getComputedHeight(iElement[0]);
                 };
             }
         };
     }])
-    .directive('fhatRow', ['fhatManualCompiler', 'fhatMessageBus', 'fhatDebouncedResizer', '$window', 'fhatDebounce',
-        function(fhatManualCompiler, fhatMessageBus, fhatDebouncedResizer, $window, fhatDebounce) {
+    .directive('fhatRow', ['fhatManualCompiler', 'fhatResizeState', '$window', 'fhatDebounce', 'fhatTemplateStaticState', 'fhatRowState', 'fhatSortState', 'fhatScrollingContainerHeightState',
+        function(fhatManualCompiler, fhatResizeState, $window, fhatDebounce, fhatTemplateStaticState, fhatRowState, fhatSortState, fhatScrollingContainerHeightState) {
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.  see below.
             restrict: 'E',
             controller: ['$scope', function($scope) {
-                $scope.sortExpression = fhatMessageBus.sortExpression;
+                $scope.sortExpression = fhatSortState.sortExpression;
 
                 $scope.handleClick = function(row, parentScopeClickHandler, selectedRowBackgroundColor) {
                     var clickHandlerFunctionName = parentScopeClickHandler.replace('(row)', '');
 
                     if(selectedRowBackgroundColor !== 'undefined') {
-                        fhatMessageBus.previouslySelectedRow.rowSelected = false;
+                        fhatRowState.previouslySelectedRow.rowSelected = false;
 
                         row.rowSelected = true;
 
-                        fhatMessageBus.previouslySelectedRow = row;
+                        fhatRowState.previouslySelectedRow = row;
                     }
 
                     if(clickHandlerFunctionName !== 'undefined') {
@@ -76,12 +83,12 @@ angular.module('fhat', [])
 
                 $scope.getRowColor = function(index, row) {
                     if(row.rowSelected) {
-                        return fhatMessageBus.selectedRowColor;
+                        return fhatTemplateStaticState.selectedRowColor;
                     } else {
                         if(index % 2 === 0) {
-                            return fhatMessageBus.evenRowColor;
+                            return fhatTemplateStaticState.evenRowColor;
                         } else {
-                            return fhatMessageBus.oddRowColor;
+                            return fhatTemplateStaticState.oddRowColor;
                         }
                     }
                 };
@@ -89,48 +96,61 @@ angular.module('fhat', [])
             // manually transclude and replace the template to work around not being able to have a template with td or tr as a root element
             // see bug: https://github.com/angular/angular.js/issues/1459
             compile: function (tElement, tAttrs) {
-                fhatMessageBus.rowSelectedBackgroundColor = tAttrs.selectedColor;
+                fhatRowState.rowSelectedBackgroundColor = tAttrs.selectedColor;
 
                 fhatManualCompiler.compileRow(tElement, tAttrs, false);
 
                 // return a linking function
                 return function(scope, iElement) {
-                    scope.fhatMessageBus = fhatMessageBus;
-
-                    fhatDebounce.debounce()
+                    scope.fhatResizeState = fhatResizeState;
+                    scope.fhatSortState = fhatSortState;
 
                     angular.element($window).bind('resize', fhatDebounce.debounce(function() {
                         // must apply since the browswer resize event is not being seen by the digest process
                         scope.$apply(function() {
-                            fhatMessageBus.debouncedResizeFiring = true;
+                            fhatResizeState.debouncedResizeFiring = true;
                         });
                     }, 50));
 
-                    scope.resizeScrollingContainerHeight = function() {
-                        var scrollingContainerHeight = iElement[0].clientHeight - fhatMessageBus.headerOffsetHeight + 'px';
+                    scope.$watch('fhatResizeState', function(newValue, oldValue) {
+                        // this gets called n times until the model settles.
+                        // it's typically two, but processing in this function must be idempotent and shouldn't
+                        // rely on it being two.
 
-                        iElement.css('height', scrollingContainerHeight);
-                    };
+                        console.log('fhatResizeState watch handler fired');
 
-                    scope.$watch('fhatMessageBus', function(newValue, oldValue) {
-                        console.log('watch handler fired');
+                        if(fhatResizeState.debouncedResizeFiring) {
+                            fhatResizeState.debouncedResizeFiring = false;
 
-                        if(fhatMessageBus.debouncedResizeFiring) {
-                            fhatMessageBus.debouncedResizeFiring = false;
-                            scope.resizeScrollingContainerHeight();
+                            // get the padding, and border and height for the fhatContainer, which we stored earlier, and
+                            // add subtract the padding, border and height of the fhatHeaderTableContainer
+                            // then set the fhatTableContainer height to that value, storing it so we don't re-apply it
+
+                            var newScrollingContainerHeight =
+                                fhatScrollingContainerHeightState.outerContainerComputedHeight -
+                                fhatScrollingContainerHeightState.headerComputedHeight;
+                            iElement.css('height', newScrollingContainerHeight + 'px');
                         }
+                    }, true);
+
+                     scope.$watch('fhatSortState', function(newValue, oldValue) {
+                        // this gets called n times until the model settles.
+                        // it's typically two, but processing in this function must be idempotent and shouldn't
+                        // rely on it being two.
+
+                        console.log('fhatSortState watch handler fired');
 
                         // scroll to top when sort applied
-                        if(fhatMessageBus.sortFiring) {
+                        if(fhatSortState.sortFiring) {
                             // turn off the sortFiring tracking before manipulating the dom so we don't have wasted events
-                            fhatMessageBus.sortFiring = false;
+                            fhatSortState.sortFiring = false;
 
                             iElement[0].scrollTop = 0;
                         }
                     }, true);
 
                     // adjust the scrolling container height when the directive initially links too
-                    scope.resizeScrollingContainerHeight();
+                    fhatResizeState.debouncedResizeFiring = true;
                 };
             }
         };
@@ -175,27 +195,22 @@ angular.module('fhat', [])
         return self;
     })
 
-    .service('fhatDebouncedResizer', function() {
+    .service('fhatJqLiteExtension', function() {
         var self = this;
 
-        self.calculateScrollingContainerHeight = function() {
-            // algorithm: take container height, and subtract by the first column in the header tables height, padding, margin and border combined
-            return 432;
+        // NOTE: this does not support IE8<
+        var getComputedStyleAsNumber = function(rawDomElement, property) {
+            return parseInt(document.defaultView.getComputedStyle(rawDomElement, '').getPropertyValue(property).replace('px', ''), 10);
+        };
+
+        self.getComputedHeight = function(rawDomElement, property) {
+            return getComputedStyleAsNumber(rawDomElement, 'height');
         };
 
         return self;
     })
 
-        /*
-    .service('fhatJqLiteExtension', function() {
-        var self = this;
-
-        self.
-
-        return self;
-    })*/
-
-    .service('fhatManualCompiler', ['fhatMessageBus', function(fhatMessageBus) {
+    .service('fhatManualCompiler', ['fhatTemplateStaticState', function(fhatTemplateStaticState) {
         var self = this;
 
         self.compileRow = function(tElement, tAttrs, isHeader) {
@@ -218,13 +233,13 @@ angular.module('fhat', [])
                     if(angular.element(childColumn).attr('sortable') === 'true') {
                         // add the ascending sort icon
                         angular.element(childColumn).find('fhat-sort-arrow-descending').attr('ng-show',
-                            'fhatMessageBus.sortExpression == \'' + angular.element(childColumn).attr('sort-field-name') +
-                            '\' && !fhatMessageBus.sortDirectionToColumnMap[\'' + angular.element(childColumn).attr('sort-field-name') + '\']').addClass('fhatDefaultSortArrowAscending');
+                            'fhatSortState.sortExpression == \'' + angular.element(childColumn).attr('sort-field-name') +
+                            '\' && !fhatSortState.sortDirectionToColumnMap[\'' + angular.element(childColumn).attr('sort-field-name') + '\']').addClass('fhatDefaultSortArrowAscending');
 
                         // add the descending sort icon
                         angular.element(childColumn).find('fhat-sort-arrow-ascending').attr('ng-show',
-                            'fhatMessageBus.sortExpression == \'' + angular.element(childColumn).attr('sort-field-name') +
-                            '\' && fhatMessageBus.sortDirectionToColumnMap[\'' + angular.element(childColumn).attr('sort-field-name') + '\']').addClass('fhatDefaultSortArrowDescending');
+                            'fhatSortState.sortExpression == \'' + angular.element(childColumn).attr('sort-field-name') +
+                            '\' && fhatSortState.sortDirectionToColumnMap[\'' + angular.element(childColumn).attr('sort-field-name') + '\']').addClass('fhatDefaultSortArrowDescending');
 
                         // add the sort click handler
                         angular.element(childColumn).attr('ng-click', 'setSortExpression(\'' +
@@ -252,9 +267,9 @@ angular.module('fhat', [])
             } else {
                 var selectedBackgroundColor = '';
 
-                fhatMessageBus.selectedRowColor = tAttrs.selectedColor;
-                fhatMessageBus.evenRowColor = tAttrs.evenColor;
-                fhatMessageBus.oddRowColor = tAttrs.oddColor;
+                fhatTemplateStaticState.selectedRowColor = tAttrs.selectedColor;
+                fhatTemplateStaticState.evenRowColor = tAttrs.evenColor;
+                fhatTemplateStaticState.oddRowColor = tAttrs.oddColor;
 
                 if(typeof(tAttrs.selectedColor) !== 'undefined' || typeof(tAttrs.evenColor) !== 'undefined' || typeof(tAttrs.oddColor) !== 'undefined' ) {
                     selectedBackgroundColor = 'ng-style="{ backgroundColor: getRowColor($index, row) }"';
@@ -262,7 +277,7 @@ angular.module('fhat', [])
 
                 // add the ng-repeat and row selection click handler to each row
                 rowTemplate = rowTemplate.replace('<tr',
-                    '<tr ng-repeat="row in model | orderBy:fhatMessageBus.sortExpression:fhatMessageBus.sortDirectionToColumnMap[fhatMessageBus.sortExpression]" ' +
+                    '<tr ng-repeat="row in model | orderBy:fhatSortState.sortExpression:fhatSortState.sortDirectionToColumnMap[fhatSortState.sortExpression]" ' +
                         selectedBackgroundColor + ' ng-click="handleClick(row, \'' +
                         tAttrs.onSelected + '\', \'' + tAttrs.selectedColor + '\')" ');
             }
@@ -275,33 +290,39 @@ angular.module('fhat', [])
         };
     }])
 
-    // be mindful of what is stored here, there is a watch tracking the properties of the singleton this returns.
-    .service('fhatMessageBus', function() {
-        var self = this;
+    .service('fhatResizeState', function() {
+        // track the debounced window resize event
+        self.debouncedResizeFiring = false;
+    })
 
+    .service('fhatScrollingContainerHeightState', function() {
+        // get the padding, border and height for the outer fhatContainer which holds the header table and the rows table
+        self.outerContainerComputedHeight = 0;
+
+        // store the offset height plus margin of the header so we know what the height of the scrolling container should be.
+        self.headerComputedHeight = 0;
+    })
+
+    .service('fhatTemplateStaticState', function() {
+        // store selected, even and odd row background colors
+        self.selectedRowColor = '';
+        self.evenRowColor = '';
+        self.oddRowColor = '';
+    })
+
+    .service('fhatRowState', function() {
         // store a reference to the previously selected row so we can access it without looking it up from the bound model
         self.previouslySelectedRow = {};
         self.previouslySelectedRowColor = '';
+    })
 
+    .service('fhatSortState', function() {
         // store the sort expression
         self.sortExpression = '';
 
         // store the columns sort direction mapping
         self.sortDirectionToColumnMap = {};
 
-        // store selected, even and odd row background colors
-        self.selectedRowColor = '';
-        self.evenRowColor = '';
-        self.oddRowColor = '';
-
         // track whether sort is firing so we can scroll the grid up to the top
         self.sortFiring = false;
-
-        // store the offset height of the header so we know what the height of the scrolling container should be.
-        self.headerOffsetHeight = 0;
-
-        // track the debounced window resize event
-        self.debouncedResizeFiring = false;
-
-        return self;
     });

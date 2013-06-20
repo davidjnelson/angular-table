@@ -27,8 +27,10 @@
             <fhat-row on-selected="handleRowSelection(row)" selected-color="#87cefa" even-color="#ffffff" odd-color="#eeeeee" class="demoRow"
                       style=" border: 10px solid; margin: 10px; padding: 10px;">
                 <fhat-column style="font-family: courier; width:40%; border: 10px solid; margin: 10px; padding: 10px;"><b>{{ row.id }}</b></fhat-column>
-                <fhat-column style="background-color: lemonchiffon; width: 30%;"><input type="text" ng-model="row.name"></input></fhat-column>
-                <fhat-column style="width: 30%;">{{ row.street }}</input></fhat-column>
+                <fhat-column style="background-color: lemonchiffon; width: 30%; border: 10px solid; margin: 10px; padding: 10px;">
+                    <input type="text" ng-model="row.name"></input>
+                </fhat-column>
+                <fhat-column style="width: 30%; border: 10px solid; margin: 10px; padding: 10px;">{{ row.street }}</input></fhat-column>
             </fhat-row>
         </fhat>
 
