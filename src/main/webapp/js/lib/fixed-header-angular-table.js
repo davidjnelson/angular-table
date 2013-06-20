@@ -1,6 +1,6 @@
 angular.module('fhat', [])
-    .directive('fhat', ['fhatScrollingContainerHeightState', 'fhatJqLiteExtension', 'fhatSortState',
-        function(fhatScrollingContainerHeightState, fhatJqLiteExtension, fhatSortState) {
+    .directive('fhat', ['fhatScrollingContainerHeightState', 'fhatJqLiteExtension', 'fhatSortState', 'fhatResizeState',
+        function(fhatScrollingContainerHeightState, fhatJqLiteExtension, fhatSortState, fhatResizeState) {
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.  see below.
             restrict: 'E',
@@ -18,8 +18,17 @@ angular.module('fhat', [])
 
                 // return linking function
                 return function(scope, iElement) {
-                    // get the padding, border and height for the fhatContainer
-                    fhatScrollingContainerHeightState.outerContainerComputedHeight = fhatJqLiteExtension.getComputedHeight(iElement[0]);
+                    var storeComputedHeight = function() {
+                        fhatScrollingContainerHeightState.outerContainerComputedHeight = fhatJqLiteExtension.getComputedHeight(iElement[0]);
+                    };
+
+                    // store the computed height on resize
+                    scope.$watch('fhatResizeState', function(oldValue, newValue) {
+                        storeComputedHeight();
+                    });
+
+                    // store the computed height on load
+                    storeComputedHeight();
                 };
             },
             scope: {
@@ -27,8 +36,8 @@ angular.module('fhat', [])
             }
         };
     }])
-    .directive('fhatHeaderRow', ['fhatManualCompiler', 'fhatScrollingContainerHeightState', 'fhatJqLiteExtension', 'fhatSortState',
-        function(fhatManualCompiler, fhatScrollingContainerHeightState, fhatJqLiteExtension, fhatSortState) {
+    .directive('fhatHeaderRow', ['fhatManualCompiler', 'fhatScrollingContainerHeightState', 'fhatJqLiteExtension', 'fhatSortState', 'fhatResizeState',
+        function(fhatManualCompiler, fhatScrollingContainerHeightState, fhatJqLiteExtension, fhatSortState, fhatResizeState) {
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.  see below.
             restrict: 'E',
@@ -291,38 +300,60 @@ angular.module('fhat', [])
     }])
 
     .service('fhatResizeState', function() {
+        var self = this;
+
         // track the debounced window resize event
         self.debouncedResizeFiring = false;
+
+        return self;
     })
 
     .service('fhatScrollingContainerHeightState', function() {
+        var self = this;
+
         // get the padding, border and height for the outer fhatContainer which holds the header table and the rows table
         self.outerContainerComputedHeight = 0;
 
         // store the offset height plus margin of the header so we know what the height of the scrolling container should be.
         self.headerComputedHeight = 0;
+
+        return self;
     })
 
     .service('fhatTemplateStaticState', function() {
+        var self = this;
+
         // store selected, even and odd row background colors
         self.selectedRowColor = '';
         self.evenRowColor = '';
         self.oddRowColor = '';
+
+        return self;
     })
 
     .service('fhatRowState', function() {
+        var self = this;
+
         // store a reference to the previously selected row so we can access it without looking it up from the bound model
         self.previouslySelectedRow = {};
         self.previouslySelectedRowColor = '';
+
+        return self;
     })
 
     .service('fhatSortState', function() {
+        var self = this;
+
         // store the sort expression
         self.sortExpression = '';
 
         // store the columns sort direction mapping
+        var self = this;
+
         self.sortDirectionToColumnMap = {};
 
         // track whether sort is firing so we can scroll the grid up to the top
         self.sortFiring = false;
+
+        return self;
     });
