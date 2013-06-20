@@ -1,6 +1,6 @@
 <html ng-app="demo">
     <head>
-        <link rel="stylesheet" href="css/lib/fixed-header-angular-table.css" />
+        <link rel="stylesheet" href="css/lib/angular-table.css" />
         <link rel="stylesheet" href="css/demo/demo.css" />
     </head>
 
@@ -15,9 +15,9 @@
                 </header-column>
                 <header-column sortable="false" sort-field-name="name" class="demoHeaderColumn">Name</header-column>
                 <header-column sortable="true" sort-field-name="street" class="demoFarRightHeaderColumn">
+                    <div  class="demoHeaderText">Street</div>
                     <sort-arrow-ascending></sort-arrow-ascending>
                     <sort-arrow-descending></sort-arrow-descending>
-                    <div  class="demoHeaderText">Street</div>
                 </header-column>
             </header-row>
 
@@ -29,18 +29,20 @@
         </angular-table>
 
         <div class="demoDetailPane">
-            <p>Id: {{ selectedRow.id }}</p>
-            <p>Name: <input type="text" ng-model="selectedRow.name"></input></p>
-            <p>Street: <input type="text" ng-model="selectedRow.street"></input></p>
+            <div class="demoDetailInnerPane">
+                <p>Id: {{ selectedRow.id }}</p>
+                <p>Name: <input type="text" ng-model="selectedRow.name"></input></p>
+                <p>Street: <input type="text" ng-model="selectedRow.street"></input></p>
 
-            <p><button ng-click="addRows(1)">Add Row To End</button></p>
-            <p><button ng-click="listOfNumbers.pop()">Remove Last Row</button></p>
-            <p><button ng-click="listOfNumbers = []">Remove All Rows</button></p>
-            <p><button ng-click="addRows(50)">Add 50 Rows</button></p>
+                <p><button ng-click="addRows(1)">Add Row To End</button></p>
+                <p><button ng-click="listOfNumbers.pop()">Remove Last Row</button></p>
+                <p><button ng-click="listOfNumbers = []">Remove All Rows</button></p>
+                <p><button ng-click="addRows(50)">Add 50 Rows</button></p>
+            </div>
         </div>
 
         <script src="js/lib/angular.js"></script>
-        <script src="js/lib/fixed-header-angular-table.js"></script>
+        <script src="js/lib/angular-table.js"></script>
         <script src="js/demo/demo.js"></script>
 
         <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>

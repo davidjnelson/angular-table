@@ -1,13 +1,15 @@
 body {
     font-family: arial;
+    margin: 0;
 }
 
 .demoTable {
     float: left;
     margin: 0;
     vertical-align: top;
-    height: 50%;
+    height: 70%;
     width: 70%;
+    border-bottom: 1px solid black;
 }
 
 .demoDetailPane {
@@ -18,6 +20,9 @@ body {
     height: 70%;
     background-color: #87cefa;
     vertical-align: top;
+}
+
+.demoDetailInnerPane {
     padding: 5px;
 }
 
@@ -42,4 +47,9 @@ body {
 
 .demoFarRightColumn {
     border-right: 0;
+}
+
+.angularTableColumn {
+    padding: 5px;
+    border-bottom: 0;
 }
