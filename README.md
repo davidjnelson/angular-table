@@ -41,8 +41,7 @@ Quick Start
 
 ```
 
-[Angular Table Live Demo](http://angulartable.com/demo/index.html)
-------------------------------------------------------------------
+# [Angular Table Live Demo](http://angulartable.com/demo/index.html)
 
 Philosophy:
 -----------
