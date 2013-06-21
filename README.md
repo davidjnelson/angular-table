@@ -35,7 +35,7 @@ Quick Start
         even-color="#ffffff" odd-color="#eeeeee">
         <column>{{ row.id }}</column>
         <column>{{ row.name }}</column>
-        <column class="demoFarRightColumn">{{ row.street }}</input></column>
+        <column>{{ row.street }}</input></column>
     </row>
 </angular-table>
 
