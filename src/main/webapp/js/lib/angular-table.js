@@ -139,7 +139,7 @@ angular.module('angular-table', [])
                     angular.element($window).bind('resize', Debounce.debounce(function() {
                         // must apply since the browser resize event is not being seen by the digest process
                         scope.$apply(function() {
-                            // flip the boolean to trigger the watches
+                            // flip the booleans to trigger the watches
                             ResizeHeightEvent.fireTrigger = !ResizeHeightEvent.fireTrigger;
                             ResizeWidthEvent.fireTrigger = !ResizeWidthEvent.fireTrigger;
                             Instrumentation.log('row', 'debounced window resize triggered');
@@ -151,7 +151,7 @@ angular.module('angular-table', [])
                     // watches get called n times until the model settles. it's typically one or two, but processing in the functions
                     // must be idempotent and as such shouldn't rely on it being any specific number.
                     scope.$watch('ResizeHeightEvent', function() {
-                        // TODO: pull the computed height of the header and the outer container out of the dom
+                        // pull the computed height of the header and the outer container out of the dom
                         var outerContainerComputedHeight = JqLiteExtension.getComputedHeightAsFloat(iElement.parent()[0]);
                         var headerComputedHeight = JqLiteExtension.getComputedHeightAsFloat(angular.element(iElement.parent().children()[0])[0]);
                         var newScrollingContainerHeight = outerContainerComputedHeight - headerComputedHeight;
@@ -169,6 +169,7 @@ angular.module('angular-table', [])
 
                     // check for scrollbars and adjust the header table width, and scrolling table height as needed when the number of bound rows changes
                     scope.$watch('model', function(newValue, oldValue) {
+                        // flip the booleans to trigger the watches
                         ResizeHeightEvent.fireTrigger = !ResizeHeightEvent.fireTrigger;
                         ResizeWidthEvent.fireTrigger = !ResizeWidthEvent.fireTrigger;
                     }, true);
