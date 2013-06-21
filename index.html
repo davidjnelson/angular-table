@@ -67,19 +67,17 @@ No javascript code required; the api is a 100% declarative dsl.</p>
         <span class="na">even-color=</span><span class="s">"#ffffff"</span> <span class="na">odd-color=</span><span class="s">"#eeeeee"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;column&gt;</span>{{ row.id }}<span class="nt">&lt;/column&gt;</span>
         <span class="nt">&lt;column&gt;</span>{{ row.name }}<span class="nt">&lt;/column&gt;</span>
-        <span class="nt">&lt;column</span> <span class="na">class=</span><span class="s">"demoFarRightColumn"</span><span class="nt">&gt;</span>{{ row.street }}<span class="nt">&lt;/input&gt;&lt;/column&gt;</span>
+        <span class="nt">&lt;column&gt;</span>{{ row.street }}<span class="nt">&lt;/input&gt;&lt;/column&gt;</span>
     <span class="nt">&lt;/row&gt;</span>
 <span class="err">&lt;</span>/angular-table&gt;
 
 </pre></div>
 
-<h2>
-<a name="live-demo" class="anchor" href="#live-demo"><span class="octicon octicon-link"></span></a>Live Demo:</h2>
+<h1>
+<a name="angular-table-live-demo" class="anchor" href="#angular-table-live-demo"><span class="octicon octicon-link"></span></a><a href="http://angulartable.com/demo/index.html">Angular Table Live Demo</a>
+</h1>
 
-<ul>
-<li>Angular Table Demo</li>
-<li>Angular Table Demo with ugly data, showing how you can abuse the css you pass in, but still have a functional grid.</li>
-</ul><h2>
+<h2>
 <a name="philosophy" class="anchor" href="#philosophy"><span class="octicon octicon-link"></span></a>Philosophy:</h2>
 
 <p>Start with a solid foundation of an easy to use api, provided as a custom html tag, also known as a 
@@ -90,7 +88,7 @@ code clean, lean, and blazing fast.</p>
 <a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features:</h2>
 
 <ul>
-<li>100% declerative dsl - no javascript required</li>
+<li>100% declarative dsl - no javascript required</li>
 <li>fixed headers</li>
 <li>sortable headers</li>
 <li>sorting tracks the state of ascending / descending on a per column basis</li>
@@ -115,18 +113,25 @@ so that the icon and your header text aligns.</li>
 <li>To customize the styling, remove or change the classes 'angularTableDefaultSortArrowAscending' and
 'angularTableDefaultSortArrowDescending' in angular-table.css.</li>
 </ul><h2>
+<a name="running-a-local-demo" class="anchor" href="#running-a-local-demo"><span class="octicon octicon-link"></span></a>Running a local demo:</h2>
+
+<ul>
+<li>git clone <a href="https://github.com/davidjnelson/angular-table.git">https://github.com/davidjnelson/angular-table.git</a>
+</li>
+<li>cd angular-table</li>
+<li>mvn jetty:run</li>
+<li>visit http://localhost:8090 in your browser</li>
+</ul><h2>
 <a name="why-not-use-ng-grid-or-smart-table" class="anchor" href="#why-not-use-ng-grid-or-smart-table"><span class="octicon octicon-link"></span></a>Why Not Use ng-grid or smart table?</h2>
 
 <p>While I deeply respect the work these folks have done, there were some issues I had that prevented me from using either.<br>
 I originally started with ng-grid, and really wanted to use it.</p>
 
-<h2>
-<a name="smart-table" class="anchor" href="#smart-table"><span class="octicon octicon-link"></span></a>Smart Table</h2>
+<p><strong>Smart Table</strong></p>
 
 <ul>
 <li>My use case required fixed headers, and its lack of support for that was a deal breaker.</li>
-</ul><h2>
-<a name="ng-grid" class="anchor" href="#ng-grid"><span class="octicon octicon-link"></span></a>ng-grid</h2>
+</ul><p><strong>ng-grid</strong></p>
 
 <ul>
 <li>No declarative configuration and customization.  You have to edit templates and options in javascript.</li>
@@ -137,13 +142,12 @@ I implemented a workaround by using a negative left margin for the content I nee
 This sort of worked, but wasn't pixel perfect and felt hacky.</li>
 <li>The code was too lengthy for my taste.  Weighing in at 3,400 lines, it supported a ton of 
 functionality that I would never need.</li>
-<li>Making the container height 100% prevented content below it from being flush to the bottom margin.</li>
 <li>It requires jquery.  I'm working hard to completely remove jquery from my app and this would be another
 spot requiring me to keep it.</li>
 </ul><h2>
-<a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h2>
+<a name="contributing-and-feature-requests" class="anchor" href="#contributing-and-feature-requests"><span class="octicon octicon-link"></span></a>Contributing And Feature Requests</h2>
 
-<p>I'd love to see pull requests come in.  Please make sure though that anything you send in uses a 100%
+<p>I'd love to see both pull requests and feature requests come in.  Please make sure though that anything you send in uses a 100%
 declarative configuration, and is an actual use case you are using for a production app.  If there are not real 
 use cases for features, I won't add them.</p>
 
