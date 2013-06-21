@@ -35,7 +35,7 @@ Quick Start
         even-color="#ffffff" odd-color="#eeeeee">
         <column>{{ row.id }}</column>
         <column>{{ row.name }}</column>
-        <column class="demoFarRightColumn">{{ row.street }}</input></column>
+        <column>{{ row.street }}</input></column>
     </row>
 </angular-table>
 
@@ -44,8 +44,8 @@ Quick Start
 Live Demo:
 ----------
 
-* Angular Table Demo
-* Angular Table Demo with ugly data, showing how you can abuse the css you pass in, but still have a functional grid.
+* [Angular Table Demo](http://angulartable.com/demo/index.html)
+* [Angular Table Demo with ugly data, showing how you can abuse the css you pass in, but still have a functional grid.](http://angulartable.com/demo/index-ugly.html)
 
 Philosophy:
 -----------
@@ -57,7 +57,7 @@ code clean, lean, and blazing fast.
 Features:
 ---------
 
-* 100% declerative dsl - no javascript required
+* 100% declarative dsl - no javascript required
 * fixed headers
 * sortable headers
 * sorting tracks the state of ascending / descending on a per column basis
@@ -82,19 +82,24 @@ so that the icon and your header text aligns.
 * To customize the styling, remove or change the classes 'angularTableDefaultSortArrowAscending' and
 'angularTableDefaultSortArrowDescending' in angular-table.css.
 
+Running a local demo:
+---------------------
+* git clone https://github.com/davidjnelson/angular-table.git
+* cd angular-table
+* mvn jetty:run
+* visit http://localhost:8090 in your browser
+
 Why Not Use ng-grid or smart table?
 -----------------------------------
 
 While I deeply respect the work these folks have done, there were some issues I had that prevented me from using either.  
 I originally started with ng-grid, and really wanted to use it.
 
-Smart Table
------------
+**Smart Table**
 
 * My use case required fixed headers, and its lack of support for that was a deal breaker.
 
-ng-grid
--------
+**ng-grid**
 
 * No declarative configuration and customization.  You have to edit templates and options in javascript.
 * A serious, dealbreaker bug where the selected row changes when you sort the columns.  I filed the bug
@@ -104,14 +109,13 @@ I implemented a workaround by using a negative left margin for the content I nee
 This sort of worked, but wasn't pixel perfect and felt hacky.
 * The code was too lengthy for my taste.  Weighing in at 3,400 lines, it supported a ton of 
 functionality that I would never need.
-* Making the container height 100% prevented content below it from being flush to the bottom margin.
 * It requires jquery.  I'm working hard to completely remove jquery from my app and this would be another
 spot requiring me to keep it.
 
-Contributing
-------------
+Contributing And Feature Requests
+---------------------------------
 
-I'd love to see pull requests come in.  Please make sure though that anything you send in uses a 100%
+I'd love to see both pull requests and feature requests come in.  Please make sure though that anything you send in uses a 100%
 declarative configuration, and is an actual use case you are using for a production app.  If there are not real 
 use cases for features, I won't add them.
 
