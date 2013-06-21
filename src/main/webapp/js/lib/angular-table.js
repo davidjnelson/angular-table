@@ -42,8 +42,8 @@ angular.module('angular-table', [])
             }
         };
     }])
-    .directive('headerRow', ['ManualCompiler', 'ScrollingContainerHeightState', 'JqLiteExtension', 'SortState', 'ResizeHeightEvent', 'ScrollingContainerWidthState', 'Instrumentation',
-        function(ManualCompiler, ScrollingContainerHeightState, JqLiteExtension, SortState, ResizeHeightEvent, ScrollingContainerWidthState, Instrumentation) {
+    .directive('headerRow', ['ManualCompiler', 'ScrollingContainerHeightState', 'JqLiteExtension', 'SortState', 'ResizeHeightEvent', 'ResizeWidthEvent', 'Instrumentation',
+        function(ManualCompiler, ScrollingContainerHeightState, JqLiteExtension, SortState, ResizeHeightEvent, ResizeWidthEvent, Instrumentation) {
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.
             restrict: 'E',
@@ -65,38 +65,31 @@ angular.module('angular-table', [])
                 // return a linking function
                 return function(scope, iElement) {
                     scope.ResizeHeightEvent = ResizeHeightEvent;
-                    scope.ScrollingContainerWidthState = ScrollingContainerWidthState;
+                    scope.ResizeWidthEvent = ResizeWidthEvent;
 
                     var storeComputedHeight = function() {
                         ScrollingContainerHeightState.headerComputedHeight = JqLiteExtension.getComputedHeightAsFloat(iElement[0]);
                         Instrumentation.log('headerRow', 'header computed height measured', ScrollingContainerHeightState.headerComputedHeight);
                     };
 
-                    // store the computed height on resize
-                    // watches get called n times until the model settles. it's typically one or two, but processing in the functions
-                    // must be idempotent and as such shouldn't rely on it being any specific number.
-                    scope.$watch('ResizeHeightEvent', function() {
-                        storeComputedHeight();
-                    }, true);
-
                     // update the header width when the scrolling container's width changes due to a scrollbar appearing
                     // watches get called n times until the model settles. it's typically one or two, but processing in the functions
                     // must be idempotent and as such shouldn't rely on it being any specific number.
-                    scope.$watch('ScrollingContainerWidthState', function(newValue) {
-                        iElement.css('width', newValue.scrollingContainerComputedWidth + 'px');
-                        Instrumentation.log('headerRow', 'header width set', newValue.scrollingContainerComputedWidth + 'px');
-                    }, true);
+                    scope.$watch('ResizeWidthEvent', function() {
+                        // pull the computed width of the scrolling container out of the dom
+                        var scrollingContainerComputedWidth = JqLiteExtension.getComputedWidthAsFloat(iElement.next()[0]);
 
-                    // store the computed height on load
-                    storeComputedHeight();
+                        iElement.css('width', scrollingContainerComputedWidth + 'px');
+                        Instrumentation.log('headerRow', 'header width set', scrollingContainerComputedWidth + 'px');
+                    }, true);
                 };
             }
         };
     }])
     .directive('row', ['ManualCompiler', 'ResizeHeightEvent', '$window', 'Debounce', 'TemplateStaticState', 'RowState', 'SortState',
-        'ScrollingContainerHeightState', 'ScrollingContainerWidthState', 'JqLiteExtension', 'Instrumentation',
+        'ScrollingContainerHeightState', 'JqLiteExtension', 'Instrumentation', 'ResizeWidthEvent',
         function(ManualCompiler, ResizeHeightEvent, $window, Debounce, TemplateStaticState, RowState, SortState, ScrollingContainerHeightState,
-            ScrollingContainerWidthState, JqLiteExtension, Instrumentation) {
+            JqLiteExtension, Instrumentation, ResizeWidthEvent) {
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.
             restrict: 'E',
@@ -143,30 +136,26 @@ angular.module('angular-table', [])
                     scope.ScrollingContainerHeightState = ScrollingContainerHeightState;
                     scope.SortState = SortState;
 
-                    var storeComputedWidth = function() {
-                        ScrollingContainerWidthState.scrollingContainerComputedWidth = JqLiteExtension.getComputedWidthAsFloat(iElement[0]);
-                        Instrumentation.log('row', 'scrolling container width measured', ScrollingContainerWidthState.scrollingContainerComputedWidth);
-                    };
-
                     angular.element($window).bind('resize', Debounce.debounce(function() {
                         // must apply since the browser resize event is not being seen by the digest process
                         scope.$apply(function() {
-                            storeComputedWidth();
-
                             // flip the boolean to trigger the watches
                             ResizeHeightEvent.fireTrigger = !ResizeHeightEvent.fireTrigger;
+                            ResizeWidthEvent.fireTrigger = !ResizeWidthEvent.fireTrigger;
                             Instrumentation.log('row', 'debounced window resize triggered');
                         });
                     }, 50));
 
-                    // when the computed height for the angularTableContainer and angularTableHeaderTableContainer change,
+                    // set the scrolling container height event on resize
                     // set the angularTableTableContainer height to angularTableContainer computed height - angularTableHeaderTableContainer computed height
                     // watches get called n times until the model settles. it's typically one or two, but processing in the functions
                     // must be idempotent and as such shouldn't rely on it being any specific number.
-                    scope.$watch('ScrollingContainerHeightState', function() {
-                        var newScrollingContainerHeight =
-                            ScrollingContainerHeightState.outerContainerComputedHeight -
-                            ScrollingContainerHeightState.headerComputedHeight;
+                    scope.$watch('ResizeHeightEvent', function() {
+                        // TODO: pull the computed height of the header and the outer container out of the dom
+                        var outerContainerComputedHeight = JqLiteExtension.getComputedHeightAsFloat(iElement.parent()[0]);
+                        var headerComputedHeight = JqLiteExtension.getComputedHeightAsFloat(angular.element(iElement.parent().children()[0])[0]);
+                        var newScrollingContainerHeight = outerContainerComputedHeight - headerComputedHeight;
+
                         iElement.css('height', newScrollingContainerHeight + 'px');
                         Instrumentation.log('row', 'scrolling container height set', newScrollingContainerHeight + 'px');
                     }, true);
@@ -180,7 +169,8 @@ angular.module('angular-table', [])
 
                     // check for scrollbars and adjust the header table width, and scrolling table height as needed when the number of bound rows changes
                     scope.$watch('model', function(newValue, oldValue) {
-                        storeComputedWidth();
+                        ResizeHeightEvent.fireTrigger = !ResizeHeightEvent.fireTrigger;
+                        ResizeWidthEvent.fireTrigger = !ResizeWidthEvent.fireTrigger;
                     }, true);
                 };
             }
@@ -339,11 +329,11 @@ angular.module('angular-table', [])
         return self;
     })
 
-     .service('ScrollingContainerWidthState', function() {
+    .service('ResizeWidthEvent', function() {
         var self = this;
 
-        // get the computed width for the outer angularTableTableContainer
-        self.scrollingContainerComputedWidth = 0;
+        // flip a boolean to indicate resize occured.  the value of the property has no meaning
+        self.fireTrigger = false;
 
         return self;
     })
