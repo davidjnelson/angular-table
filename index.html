@@ -67,7 +67,7 @@ No javascript code required; the api is a 100% declarative dsl.</p>
         <span class="na">even-color=</span><span class="s">"#ffffff"</span> <span class="na">odd-color=</span><span class="s">"#eeeeee"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;column&gt;</span>{{ row.id }}<span class="nt">&lt;/column&gt;</span>
         <span class="nt">&lt;column&gt;</span>{{ row.name }}<span class="nt">&lt;/column&gt;</span>
-        <span class="nt">&lt;column</span> <span class="na">class=</span><span class="s">"demoFarRightColumn"</span><span class="nt">&gt;</span>{{ row.street }}<span class="nt">&lt;/input&gt;&lt;/column&gt;</span>
+        <span class="nt">&lt;column&gt;</span>{{ row.street }}<span class="nt">&lt;/input&gt;&lt;/column&gt;</span>
     <span class="nt">&lt;/row&gt;</span>
 <span class="err">&lt;</span>/angular-table&gt;
 
@@ -114,6 +114,15 @@ container adjusts its height to pixel perfection, even if your container's heigh
 so that the icon and your header text aligns.</li>
 <li>To customize the styling, remove or change the classes 'angularTableDefaultSortArrowAscending' and
 'angularTableDefaultSortArrowDescending' in angular-table.css.</li>
+</ul><h2>
+<a name="running-a-local-demo" class="anchor" href="#running-a-local-demo"><span class="octicon octicon-link"></span></a>Running a local demo:</h2>
+
+<ul>
+<li>git clone <a href="https://github.com/davidjnelson/angular-table.git">https://github.com/davidjnelson/angular-table.git</a>
+</li>
+<li>cd angular-table</li>
+<li>mvn jetty:run</li>
+<li>visit http://localhost:8090 in your browser</li>
 </ul><h2>
 <a name="why-not-use-ng-grid-or-smart-table" class="anchor" href="#why-not-use-ng-grid-or-smart-table"><span class="octicon octicon-link"></span></a>Why Not Use ng-grid or smart table?</h2>
 
