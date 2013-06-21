@@ -44,8 +44,9 @@ Quick Start
 Live Demo:
 ----------
 
-* Angular Table Demo
-* Angular Table Demo with ugly data, showing how you can abuse the css you pass in, but still have a functional grid.
+* (Angular Table Demo)[http://angulartable.com/demo/index.html]
+* (Angular Table Demo with ugly data, showing how you can abuse the css you pass in, but still have a functional grid.) 
+[http://angulartable.com/demo/index-ugly.html]
 
 Philosophy:
 -----------
@@ -57,7 +58,7 @@ code clean, lean, and blazing fast.
 Features:
 ---------
 
-* 100% declerative dsl - no javascript required
+* 100% declarative dsl - no javascript required
 * fixed headers
 * sortable headers
 * sorting tracks the state of ascending / descending on a per column basis
