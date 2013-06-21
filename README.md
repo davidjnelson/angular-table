@@ -82,6 +82,13 @@ so that the icon and your header text aligns.
 * To customize the styling, remove or change the classes 'angularTableDefaultSortArrowAscending' and
 'angularTableDefaultSortArrowDescending' in angular-table.css.
 
+Running a local demo:
+---------------------
+* git clone https://github.com/davidjnelson/angular-table.git
+* cd angular-table
+* mvn jetty:run
+* visit http://localhost:8090 in your browser
+
 Why Not Use ng-grid or smart table?
 -----------------------------------
 
