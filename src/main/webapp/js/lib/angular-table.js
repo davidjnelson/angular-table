@@ -297,6 +297,7 @@ angular.module('angular-table', [])
                 rowTemplate = rowTemplate.replace(/sort-arrow-ascending/g, 'div');
             } else {
                 var selectedBackgroundColor = '';
+                var ngClick = '';
 
                 TemplateStaticState.selectedRowColor = tAttrs.selectedColor;
                 TemplateStaticState.evenRowColor = tAttrs.evenColor;
@@ -306,11 +307,15 @@ angular.module('angular-table', [])
                     selectedBackgroundColor = 'ng-style="{ backgroundColor: getRowColor($index, row) }"';
                 }
 
+                if(typeof(tAttrs.onSelected) !== 'undefined') {
+                    ' ng-click="handleClick(row, \'' +
+                        tAttrs.onSelected + '\', \'' + tAttrs.selectedColor + '\')" '
+                }
+
                 // add the ng-repeat and row selection click handler to each row
                 rowTemplate = rowTemplate.replace('<tr',
                     '<tr ng-repeat="row in model | orderBy:SortState.sortExpression:SortState.sortDirectionToColumnMap[SortState.sortExpression]" ' +
-                        selectedBackgroundColor + ' ng-click="handleClick(row, \'' +
-                        tAttrs.onSelected + '\', \'' + tAttrs.selectedColor + '\')" ');
+                        selectedBackgroundColor + ngClick);
             }
 
             // wrap our rows in a table, and a container div.  the container div will manage the scrolling.
