@@ -1,51 +1,36 @@
 <!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=640" />
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Angular Table : An angular directive for a table with fixed, sortable headers, row selection, row even/odd coloring, which automatically stays the correct height relative to its container when the browser is resized.  No javascript code required; the api is a 100% declarative dsl." />
 
-    <link rel="stylesheet" href="stylesheets/core.css" media="screen"/>
-    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)"/>
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <script type="text/javascript" src="javascripts/modernizr.js"></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
-    <script type="text/javascript">
-      $(document).ready(function () {
-        $('#main_content').headsmart()
-      })
-    </script>
-    <title>Angular Table by davidjnelson</title>
+    <title>Angular Table</title>
   </head>
 
   <body>
-    <a id="forkme_banner" href="https://github.com/davidjnelson/angular-table">View on GitHub</a>
-    <div class="shell">
 
-      <header>
-        <span class="ribbon-outer">
-          <span class="ribbon-inner">
-            <h1>Angular Table</h1>
-            <h2>An angular directive for a table with fixed, sortable headers, row selection, row even/odd coloring, which automatically stays the correct height relative to its container when the browser is resized.  No javascript code required; the api is a 100% declarative dsl.</h2>
-          </span>
-          <span class="left-tail"></span>
-          <span class="right-tail"></span>
-        </span>
-      </header>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/davidjnelson/angular-table">View on GitHub</a>
 
-      <section id="downloads">
-        <span class="inner">
-          <a href="https://github.com/davidjnelson/angular-table/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/davidjnelson/angular-table/tarball/master" class="tgz"><em>download</em> .TGZ</a>
-        </span>
-      </section>
+          <h1 id="project_title">Angular Table</h1>
+          <h2 id="project_tagline">An angular directive for a table with fixed, sortable headers, row selection, row even/odd coloring, which automatically stays the correct height relative to its container when the browser is resized.  No javascript code required; the api is a 100% declarative dsl.</h2>
 
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/davidjnelson/angular-table/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/davidjnelson/angular-table/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
 
-      <span class="banner-fix"></span>
-
-
-      <section id="main_content">
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h1>
 <a name="angular-table" class="anchor" href="#angular-table"><span class="octicon octicon-link"></span></a>Angular Table</h1>
 
@@ -56,25 +41,26 @@
 <li>include angular.js, angular-table.js, and angular-table.css.</li>
 <li>Put this in your template: </li>
 </ul><div class="highlight"><pre>
-<span class="nt">&lt;angular</span><span class="na">-table</span> <span class="na">model=</span><span class="s">"[ { id: 1, name: 'Bob', street: '1 street ave' } ]"</span> <span class="na">default-sort-column=</span><span class="s">"id"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;angular</span><span class="na">-table</span> <span class="na">model=</span><span class="s">"[ { id: 1, name: 'Bob', street: '1 street ave' } ]"</span> 
+    <span class="na">default-sort-column=</span><span class="s">"id"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;header</span><span class="na">-row</span><span class="nt">&gt;</span>
         <span class="nt">&lt;header</span><span class="na">-column</span> <span class="na">sortable=</span><span class="s">"true"</span> <span class="na">sort-field-name=</span><span class="s">"id"</span><span class="nt">&gt;</span>
             <span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">"display: inline-block;"</span><span class="nt">&gt;</span>Id<span class="nt">&lt;/div&gt;</span>
             <span class="nt">&lt;sort</span><span class="na">-arrow-ascending</span><span class="nt">&gt;</span><span class="err">&lt;</span>/sort-arrow-ascending&gt;
             <span class="nt">&lt;sort</span><span class="na">-arrow-descending</span><span class="nt">&gt;</span><span class="err">&lt;</span>/sort-arrow-descending&gt;
         <span class="err">&lt;</span>/header-column&gt;
-        <span class="nt">&lt;header</span><span class="na">-column</span> <span class="na">sortable=</span><span class="s">"false"</span> <span class="na">sort-field-name=</span><span class="s">"name"</span> <span class="na">class=</span><span class="s">"demoHeaderColumn"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;header</span><span class="na">-column</span> <span class="na">sortable=</span><span class="s">"false"</span> <span class="na">sort-field-name=</span><span class="s">"name"</span><span class="nt">&gt;</span>
             Name
         <span class="err">&lt;</span>/header-column&gt;
-        <span class="nt">&lt;header</span><span class="na">-column</span> <span class="na">sortable=</span><span class="s">"true"</span> <span class="na">sort-field-name=</span><span class="s">"street"</span> <span class="na">class=</span><span class="s">"demoFarRightHeaderColumn"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;header</span><span class="na">-column</span> <span class="na">sortable=</span><span class="s">"true"</span> <span class="na">sort-field-name=</span><span class="s">"street"</span><span class="nt">&gt;</span>
             <span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">"display: inline-block;"</span><span class="nt">&gt;</span>Street<span class="nt">&lt;/div&gt;</span>
             <span class="nt">&lt;sort</span><span class="na">-arrow-ascending</span><span class="nt">&gt;</span><span class="err">&lt;</span>/sort-arrow-ascending&gt;
             <span class="nt">&lt;sort</span><span class="na">-arrow-descending</span><span class="nt">&gt;</span><span class="err">&lt;</span>/sort-arrow-descending&gt;
         <span class="err">&lt;</span>/header-column&gt;
     <span class="err">&lt;</span>/header-row&gt;
 
-    <span class="nt">&lt;row</span> <span class="na">on-selected=</span><span class="s">"handleRowSelection(row)"</span> <span class="na">selected-color=</span><span class="s">"#87cefa"</span> <span class="na">even-color=</span><span class="s">"#ffffff"</span> 
-        <span class="na">odd-color=</span><span class="s">"#eeeeee"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;row</span> <span class="na">on-selected=</span><span class="s">"handleRowSelection(row)"</span> <span class="na">selected-color=</span><span class="s">"#87cefa"</span> 
+        <span class="na">even-color=</span><span class="s">"#ffffff"</span> <span class="na">odd-color=</span><span class="s">"#eeeeee"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;column&gt;</span>{{ row.id }}<span class="nt">&lt;/column&gt;</span>
         <span class="nt">&lt;column&gt;</span>{{ row.name }}<span class="nt">&lt;/column&gt;</span>
         <span class="nt">&lt;column</span> <span class="na">class=</span><span class="s">"demoFarRightColumn"</span><span class="nt">&gt;</span>{{ row.street }}<span class="nt">&lt;/input&gt;&lt;/column&gt;</span>
@@ -170,19 +156,14 @@ use cases for features, I won't add them.</p>
 <p>Follow me on Twitter:
 <a href="https://twitter.com/david_j_nelson">https://twitter.com/david_j_nelson</a></p>
       </section>
+    </div>
 
-      <footer>
-        <span class="ribbon-outer">
-          <span class="ribbon-inner">
-            <p>this project by <a href="https://github.com/davidjnelson">davidjnelson</a> can be found on <a href="https://github.com/davidjnelson/angular-table">GitHub</a></p>
-          </span>
-          <span class="left-tail"></span>
-          <span class="right-tail"></span>
-        </span>
-        <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> using Merlot</p>
-        <span class="octocat"></span>
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Angular Table maintained by <a href="https://github.com/davidjnelson">davidjnelson</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
-
     </div>
 
               <script type="text/javascript">
@@ -195,6 +176,7 @@ use cases for features, I won't add them.</p>
             pageTracker._trackPageview();
             } catch(err) {}
           </script>
+
 
   </body>
 </html>
