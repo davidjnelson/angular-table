@@ -77,14 +77,10 @@ container adjusts its height to pixel perfection, even if your container's heigh
 Styling the ascending / descending icons:
 -----------------------------------------
 
-This is the one part of the api I'm still not thrilled about.  I may update this in the near future.  I wanted to have 
-a nice looking out of the box style, with the ability to fully customize the icons as well.
-
-* To use the default functionality, ensure your header text is in an element with the style:  display: inline-block applied
+* To use the default styling, ensure your header text is in an element with the style:  display: inline-block applied
 so that the icon and your header text aligns.
-* To change the style, remove or change the classes 'angularTableDefaultSortArrowAscending' and
-'angularTableDefaultSortArrowDescending' in angular-table.css.  Of course, you can add any css classes, style attributes, and
-the html inside both the sort arrow tags, as you can with any of the other custom tags.
+* To customize the styling, remove or change the classes 'angularTableDefaultSortArrowAscending' and
+'angularTableDefaultSortArrowDescending' in angular-table.css.
 
 Why Not Use ng-grid or smart table?
 -----------------------------------
