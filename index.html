@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Angular Table : An angular directive for a table with fixed, sortable headers, row selection, row even/odd coloring, which automatically stays the correct height relative to its container when the browser is resized.  No javascript code required; the api is a 100% declarative dsl." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Angular Table</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/davidjnelson/angular-table">View on GitHub</a>
+
+          <h1 id="project_title">Angular Table</h1>
+          <h2 id="project_tagline">An angular directive for a table with fixed, sortable headers, row selection, row even/odd coloring, which automatically stays the correct height relative to its container when the browser is resized.  No javascript code required; the api is a 100% declarative dsl.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/davidjnelson/angular-table/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/davidjnelson/angular-table/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="angular-table" class="anchor" href="#angular-table"><span class="octicon octicon-link"></span></a>Angular Table</h1>
+
+<p>An angular directive for a table with fixed, sortable headers, row selection, row even/odd coloring, 
+which automatically stays the correct height relative to its container when the browser is resized. 
+No javascript code required; the api is a 100% declarative dsl.</p>
+
+<h2>
+<a name="quick-start" class="anchor" href="#quick-start"><span class="octicon octicon-link"></span></a>Quick Start</h2>
+
+<ul>
+<li>include angular.js, angular-table.js, and angular-table.css.</li>
+<li>Put this in your template: </li>
+</ul><div class="highlight"><pre>
+<span class="nt">&lt;angular</span><span class="na">-table</span> <span class="na">model=</span><span class="s">"[ { id: 1, name: 'Bob', street: '1 street ave' } ]"</span> 
+    <span class="na">default-sort-column=</span><span class="s">"id"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;header</span><span class="na">-row</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;header</span><span class="na">-column</span> <span class="na">sortable=</span><span class="s">"true"</span> <span class="na">sort-field-name=</span><span class="s">"id"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">"display: inline-block;"</span><span class="nt">&gt;</span>Id<span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;sort</span><span class="na">-arrow-ascending</span><span class="nt">&gt;</span><span class="err">&lt;</span>/sort-arrow-ascending&gt;
+            <span class="nt">&lt;sort</span><span class="na">-arrow-descending</span><span class="nt">&gt;</span><span class="err">&lt;</span>/sort-arrow-descending&gt;
+        <span class="err">&lt;</span>/header-column&gt;
+        <span class="nt">&lt;header</span><span class="na">-column</span> <span class="na">sortable=</span><span class="s">"false"</span> <span class="na">sort-field-name=</span><span class="s">"name"</span><span class="nt">&gt;</span>
+            Name
+        <span class="err">&lt;</span>/header-column&gt;
+        <span class="nt">&lt;header</span><span class="na">-column</span> <span class="na">sortable=</span><span class="s">"true"</span> <span class="na">sort-field-name=</span><span class="s">"street"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">"display: inline-block;"</span><span class="nt">&gt;</span>Street<span class="nt">&lt;/div&gt;</span>
+            <span class="nt">&lt;sort</span><span class="na">-arrow-ascending</span><span class="nt">&gt;</span><span class="err">&lt;</span>/sort-arrow-ascending&gt;
+            <span class="nt">&lt;sort</span><span class="na">-arrow-descending</span><span class="nt">&gt;</span><span class="err">&lt;</span>/sort-arrow-descending&gt;
+        <span class="err">&lt;</span>/header-column&gt;
+    <span class="err">&lt;</span>/header-row&gt;
+
+    <span class="nt">&lt;row</span> <span class="na">on-selected=</span><span class="s">"handleRowSelection(row)"</span> <span class="na">selected-color=</span><span class="s">"#87cefa"</span> 
+        <span class="na">even-color=</span><span class="s">"#ffffff"</span> <span class="na">odd-color=</span><span class="s">"#eeeeee"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;column&gt;</span>{{ row.id }}<span class="nt">&lt;/column&gt;</span>
+        <span class="nt">&lt;column&gt;</span>{{ row.name }}<span class="nt">&lt;/column&gt;</span>
+        <span class="nt">&lt;column</span> <span class="na">class=</span><span class="s">"demoFarRightColumn"</span><span class="nt">&gt;</span>{{ row.street }}<span class="nt">&lt;/input&gt;&lt;/column&gt;</span>
+    <span class="nt">&lt;/row&gt;</span>
+<span class="err">&lt;</span>/angular-table&gt;
+
+</pre></div>
+
+<h2>
+<a name="live-demo" class="anchor" href="#live-demo"><span class="octicon octicon-link"></span></a>Live Demo:</h2>
+
+<ul>
+<li>Angular Table Demo</li>
+<li>Angular Table Demo with ugly data, showing how you can abuse the css you pass in, but still have a functional grid.</li>
+</ul><h2>
+<a name="philosophy" class="anchor" href="#philosophy"><span class="octicon octicon-link"></span></a>Philosophy:</h2>
+
+<p>Start with a solid foundation of an easy to use api, provided as a custom html tag, also known as a 
+domain specific language.  Only implement features with use cases in apps being pushed to production.  Keep the
+code clean, lean, and blazing fast.</p>
+
+<h2>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features:</h2>
+
+<ul>
+<li>100% declerative dsl - no javascript required</li>
+<li>fixed headers</li>
+<li>sortable headers</li>
+<li>sorting tracks the state of ascending / descending on a per column basis</li>
+<li>extremely easy to customize, just add your own html and css to the custom html tags.  it just works!</li>
+<li>simple row selection.  just pass the name of a method on your controller scope, and the row will be passed in.</li>
+<li>row even/odd coloring</li>
+<li>rows are bound to a model, which is simply an array of your objects, allowing for simple customization 
+and data loading</li>
+<li>enable / disable sorting of columns</li>
+<li>when the browser is resized or data is added / removed from the bound model, as scrollbars appear / disappear 
+the fixed header columns adjust their width to pixel perfection.</li>
+<li>when the browser is resized or data is added / removed from the bound model, the height of the scrolling
+container adjusts its height to pixel perfection, even if your container's height is specified in percentages.</li>
+<li>does not require any dependencies other than stock angular.  no jquery needed.</li>
+<li>simple.  only 400 lines of code.</li>
+</ul><h2>
+<a name="styling-the-ascending--descending-icons" class="anchor" href="#styling-the-ascending--descending-icons"><span class="octicon octicon-link"></span></a>Styling the ascending / descending icons:</h2>
+
+<ul>
+<li>To use the default styling, ensure your header text is in an element with the style:  display: inline-block applied
+so that the icon and your header text aligns.</li>
+<li>To customize the styling, remove or change the classes 'angularTableDefaultSortArrowAscending' and
+'angularTableDefaultSortArrowDescending' in angular-table.css.</li>
+</ul><h2>
+<a name="why-not-use-ng-grid-or-smart-table" class="anchor" href="#why-not-use-ng-grid-or-smart-table"><span class="octicon octicon-link"></span></a>Why Not Use ng-grid or smart table?</h2>
+
+<p>While I deeply respect the work these folks have done, there were some issues I had that prevented me from using either.<br>
+I originally started with ng-grid, and really wanted to use it.</p>
+
+<h2>
+<a name="smart-table" class="anchor" href="#smart-table"><span class="octicon octicon-link"></span></a>Smart Table</h2>
+
+<ul>
+<li>My use case required fixed headers, and its lack of support for that was a deal breaker.</li>
+</ul><h2>
+<a name="ng-grid" class="anchor" href="#ng-grid"><span class="octicon octicon-link"></span></a>ng-grid</h2>
+
+<ul>
+<li>No declarative configuration and customization.  You have to edit templates and options in javascript.</li>
+<li>A serious, dealbreaker bug where the selected row changes when you sort the columns.  I filed the bug
+and after over a week no one working on it has responded.</li>
+<li>A serious, dealbreaker design issue where the column used to house the scrollbar appears even if no scrollbar is present.
+I implemented a workaround by using a negative left margin for the content I needed to be flush to the right of the grid.
+This sort of worked, but wasn't pixel perfect and felt hacky.</li>
+<li>The code was too lengthy for my taste.  Weighing in at 3,400 lines, it supported a ton of 
+functionality that I would never need.</li>
+<li>Making the container height 100% prevented content below it from being flush to the bottom margin.</li>
+<li>It requires jquery.  I'm working hard to completely remove jquery from my app and this would be another
+spot requiring me to keep it.</li>
+</ul><h2>
+<a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h2>
+
+<p>I'd love to see pull requests come in.  Please make sure though that anything you send in uses a 100%
+declarative configuration, and is an actual use case you are using for a production app.  If there are not real 
+use cases for features, I won't add them.</p>
+
+<p>Discuss on Hacker News:</p>
+
+<p>Follow me on Twitter:
+<a href="https://twitter.com/david_j_nelson">https://twitter.com/david_j_nelson</a></p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Angular Table maintained by <a href="https://github.com/davidjnelson">davidjnelson</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-6242674-16");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
+  </body>
+</html>
