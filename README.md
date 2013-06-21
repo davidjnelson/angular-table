@@ -1,6 +1,10 @@
 Angular Table
 =============
 
+An angular directive for a table with fixed, sortable headers, row selection, row even/odd coloring, 
+which automatically stays the correct height relative to its container when the browser is resized. 
+No javascript code required; the api is a 100% declarative dsl.
+
 Quick Start
 -----------
 
@@ -36,10 +40,6 @@ Quick Start
 </angular-table>
 
 ```
-
-An angular directive for a table with fixed, sortable headers, row selection, row even/odd coloring, 
-which automatically stays the correct height relative to its container when the browser is resized. 
-No javascript code required; the api is a 100% declarative dsl. 
 
 Live Demo:
 ----------
