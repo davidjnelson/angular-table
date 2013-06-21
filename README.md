@@ -104,7 +104,6 @@ I implemented a workaround by using a negative left margin for the content I nee
 This sort of worked, but wasn't pixel perfect and felt hacky.
 * The code was too lengthy for my taste.  Weighing in at 3,400 lines, it supported a ton of 
 functionality that I would never need.
-* Making the container height 100% prevented content below it from being flush to the bottom margin.
 * It requires jquery.  I'm working hard to completely remove jquery from my app and this would be another
 spot requiring me to keep it.
 
