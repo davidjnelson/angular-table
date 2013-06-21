@@ -116,8 +116,7 @@ declarative configuration, and is an actual use case you are using for a product
 use cases for features, I won't add them.
 
 Discuss on Hacker News:
-
-
+https://news.ycombinator.com/item?id=5920569
 
 Follow me on Twitter:
 https://twitter.com/david_j_nelson
