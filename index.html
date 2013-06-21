@@ -34,6 +34,10 @@
         <h1>
 <a name="angular-table" class="anchor" href="#angular-table"><span class="octicon octicon-link"></span></a>Angular Table</h1>
 
+<p>An angular directive for a table with fixed, sortable headers, row selection, row even/odd coloring, 
+which automatically stays the correct height relative to its container when the browser is resized. 
+No javascript code required; the api is a 100% declarative dsl.</p>
+
 <h2>
 <a name="quick-start" class="anchor" href="#quick-start"><span class="octicon octicon-link"></span></a>Quick Start</h2>
 
@@ -68,10 +72,6 @@
 <span class="err">&lt;</span>/angular-table&gt;
 
 </pre></div>
-
-<p>An angular directive for a table with fixed, sortable headers, row selection, row even/odd coloring, 
-which automatically stays the correct height relative to its container when the browser is resized. 
-No javascript code required; the api is a 100% declarative dsl. </p>
 
 <h2>
 <a name="live-demo" class="anchor" href="#live-demo"><span class="octicon octicon-link"></span></a>Live Demo:</h2>
@@ -109,15 +109,11 @@ container adjusts its height to pixel perfection, even if your container's heigh
 </ul><h2>
 <a name="styling-the-ascending--descending-icons" class="anchor" href="#styling-the-ascending--descending-icons"><span class="octicon octicon-link"></span></a>Styling the ascending / descending icons:</h2>
 
-<p>This is the one part of the api I'm still not thrilled about.  I may update this in the near future.  I wanted to have 
-a nice looking out of the box style, with the ability to fully customize the icons as well.</p>
-
 <ul>
-<li>To use the default functionality, ensure your header text is in an element with the style:  display: inline-block applied
+<li>To use the default styling, ensure your header text is in an element with the style:  display: inline-block applied
 so that the icon and your header text aligns.</li>
-<li>To change the style, remove or change the classes 'angularTableDefaultSortArrowAscending' and
-'angularTableDefaultSortArrowDescending' in angular-table.css.  Of course, you can add any css classes, style attributes, and
-the html inside both the sort arrow tags, as you can with any of the other custom tags.</li>
+<li>To customize the styling, remove or change the classes 'angularTableDefaultSortArrowAscending' and
+'angularTableDefaultSortArrowDescending' in angular-table.css.</li>
 </ul><h2>
 <a name="why-not-use-ng-grid-or-smart-table" class="anchor" href="#why-not-use-ng-grid-or-smart-table"><span class="octicon octicon-link"></span></a>Why Not Use ng-grid or smart table?</h2>
 
