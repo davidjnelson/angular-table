@@ -40,6 +40,12 @@ An angular directive for a table with fixed, sortable headers, row selection, ro
 which automatically stays the correct height relative to its container when the browser is resized. 
 No javascript code required; the api is a 100% declarative dsl. 
 
+Live Demo:
+----------
+
+* Angular Table Demo
+* Angular Table Demo with ugly data, showing how you can abuse the css you pass in, but still have a functional grid.
+
 Philosophy:
 -----------
 
