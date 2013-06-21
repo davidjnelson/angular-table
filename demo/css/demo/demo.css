@@ -1,0 +1,55 @@
+body {
+    font-family: arial;
+    margin: 0;
+}
+
+.demoTable {
+    float: left;
+    margin: 0;
+    vertical-align: top;
+    height: 70%;
+    width: 70%;
+    border-bottom: 1px solid black;
+}
+
+.demoDetailPane {
+    float: left;
+    border: 1px solid black;
+    margin: 0;
+    width: 20%;
+    height: 70%;
+    background-color: #87cefa;
+    vertical-align: top;
+}
+
+.demoDetailInnerPane {
+    padding: 5px;
+}
+
+.demoRow {
+    font-size: 16px;
+}
+
+.demoHeaderColumn {
+    background-color: #cccccc;
+    border-bottom: 0;
+}
+
+.demoFarRightHeaderColumn {
+    background-color: #cccccc;
+    border-bottom: 0;
+    border-right: 0;
+}
+
+.demoHeaderText {
+    display: inline-block;
+}
+
+.demoFarRightColumn {
+    border-right: 0;
+}
+
+.angularTableColumn {
+    padding: 5px;
+    border-bottom: 0;
+}

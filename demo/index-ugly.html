@@ -1,0 +1,56 @@
+<html ng-app="demo">
+    <head>
+        <link rel="stylesheet" href="css/lib/angular-table.css" />
+        <link rel="stylesheet" href="css/demo/demo.css" />
+    </head>
+
+    <body ng-controller="demoController">
+
+        <angular-table model="listOfNumbers" default-sort-column="id" class="demoTable" style="border: 10px solid; margin-left: 10px; margin-bottom: 10px; padding: 10px;">
+            <header-row style="border: 10px; margin: 10px; padding: 10px;">
+                <header-column sortable="true" sort-field-name="id"
+                                    style="background-color: deepskyblue; width:40%; border: 10px solid; margin: 10px;">
+                    <div style="display: inline-block;">Id {{ 1 + 1 }}</div>
+                    <sort-arrow-ascending></sort-arrow-ascending>
+                    <sort-arrow-descending></sort-arrow-descending>
+                </header-column>
+                <header-column sortable="false" sort-field-name="name" class="demoHeaderColumn" style="width: 30%; margin: 10px; padding: 10px;">
+                    <sort-arrow-ascending></sort-arrow-ascending>
+                    <sort-arrow-descending></sort-arrow-descending> <div style="display: inline-block;"><i>Name</i></div>
+                </header-column>
+                <header-column sortable="true" sort-field-name="street" style="width: 30%; border: 10px solid; padding: 10px;">
+                    <sort-arrow-ascending></sort-arrow-ascending>
+                    <sort-arrow-descending></sort-arrow-descending> <div style="display: inline-block;">Street</div>
+                </header-column>
+            </header-row>
+
+            <row on-selected="handleRowSelection(row)" selected-color="#87cefa" even-color="#ffffff" odd-color="#eeeeee" class="demoRow"
+                      style=" border: 7px solid; margin: 7px; padding: 7px;">
+                <column style="font-family: courier; width:40%; margin: 2px; padding: 2px;"><b>{{ row.id }}</b></column>
+                <column style="background-color: lemonchiffon; width: 30%; border: 2px solid; margin: 2px;">
+                    <input type="text" ng-model="row.name"></input>
+                </column>
+                <column style="width: 30%; border: 2px solid; padding: 2px;">{{ row.street }}</input></column>
+            </row>
+        </angular-table>
+
+        <div class="demoDetailPane">
+            <p>Id: {{ selectedRow.id }}</p>
+            <p>Name: <input type="text" ng-model="selectedRow.name"></input></p>
+            <p>Street: <input type="text" ng-model="selectedRow.street"></input></p>
+
+            <p><button ng-click="addRows(1)">Add Row To End</button></p>
+            <p><button ng-click="listOfNumbers.pop()">Remove Last Row</button></p>
+            <p><button ng-click="listOfNumbers = []">Remove All Rows</button></p>
+            <p><button ng-click="addRows(50)">Add 50 Rows</button></p>
+        </div>
+
+        <script src="js/lib/angular.js"></script>
+        <script src="js/lib/angular-table.js"></script>
+        <script src="js/demo/demo.js"></script>
+
+        <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+    </body>
+
+</html>
