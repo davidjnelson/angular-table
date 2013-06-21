@@ -88,13 +88,11 @@ Why Not Use ng-grid or smart table?
 While I deeply respect the work these folks have done, there were some issues I had that prevented me from using either.  
 I originally started with ng-grid, and really wanted to use it.
 
-Smart Table
------------
+**Smart Table**
 
 * My use case required fixed headers, and its lack of support for that was a deal breaker.
 
-ng-grid
--------
+**ng-grid**
 
 * No declarative configuration and customization.  You have to edit templates and options in javascript.
 * A serious, dealbreaker bug where the selected row changes when you sort the columns.  I filed the bug
@@ -107,10 +105,10 @@ functionality that I would never need.
 * It requires jquery.  I'm working hard to completely remove jquery from my app and this would be another
 spot requiring me to keep it.
 
-Contributing
-------------
+Contributing And Feature Requests
+---------------------------------
 
-I'd love to see pull requests come in.  Please make sure though that anything you send in uses a 100%
+I'd love to see both pull requests and feature requests come in.  Please make sure though that anything you send in uses a 100%
 declarative configuration, and is an actual use case you are using for a production app.  If there are not real 
 use cases for features, I won't add them.
 
