@@ -44,9 +44,8 @@ Quick Start
 Live Demo:
 ----------
 
-* (Angular Table Demo)[http://angulartable.com/demo/index.html]
-* (Angular Table Demo with ugly data, showing how you can abuse the css you pass in, but still have a functional grid.) 
-[http://angulartable.com/demo/index-ugly.html]
+* [Angular Table Demo](http://angulartable.com/demo/index.html)
+* [Angular Table Demo with ugly data, showing how you can abuse the css you pass in, but still have a functional grid.](http://angulartable.com/demo/index-ugly.html)
 
 Philosophy:
 -----------
