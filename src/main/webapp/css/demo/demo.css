@@ -26,30 +26,10 @@ body {
     padding: 5px;
 }
 
-.demoRow {
-    font-size: 16px;
-}
-
 .demoHeaderColumn {
     background-color: #cccccc;
-    border-bottom: 0;
-}
-
-.demoFarRightHeaderColumn {
-    background-color: #cccccc;
-    border-bottom: 0;
-    border-right: 0;
 }
 
 .demoHeaderText {
     display: inline-block;
-}
-
-.demoFarRightColumn {
-    border-right: 0;
-}
-
-.angularTableColumn {
-    padding: 5px;
-    border-bottom: 0;
 }

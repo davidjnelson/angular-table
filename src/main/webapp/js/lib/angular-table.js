@@ -1,6 +1,6 @@
 angular.module('angular-table', [])
-    .directive('angularTable', ['ScrollingContainerHeightState', 'JqLiteExtension', 'SortState', 'ResizeState',
-        function(ScrollingContainerHeightState, JqLiteExtension, SortState, ResizeState) {
+    .directive('angularTable', ['ScrollingContainerHeightState', 'JqLiteExtension', 'SortState', 'ResizeHeightEvent', 'TemplateStaticState', 'Instrumentation',
+        function(ScrollingContainerHeightState, JqLiteExtension, SortState, ResizeHeightEvent, TemplateStaticState, Instrumentation) {
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.
             restrict: 'E',
@@ -8,6 +8,7 @@ angular.module('angular-table', [])
             // see bug: https://github.com/angular/angular.js/issues/1459
             compile: function (tElement, tAttrs) {
                 SortState.sortExpression = tAttrs.defaultSortColumn;
+                TemplateStaticState.instrumentationEnabled = tAttrs.instrumentationEnabled;
 
                 // find whatever classes were passed into the angular-table, and merge them with the built in classes for the container div
                 tElement.addClass('angularTableContainer');
@@ -18,16 +19,17 @@ angular.module('angular-table', [])
 
                 // return linking function
                 return function(scope, iElement) {
-                    scope.ResizeState = ResizeState;
+                    scope.ResizeHeightEvent = ResizeHeightEvent;
 
                     var storeComputedHeight = function() {
-                        ScrollingContainerHeightState.outerContainerComputedHeight = JqLiteExtension.getComputedHeightAsFloat(iElement[0]);
+                        ScrollingContainerHeightState.outerContainerComputedHeight = iElement[0].clientHeight; //JqLiteExtension.getComputedPropertyAsFloat(iElement[0], 'height');
+                        Instrumentation.log('angularTable', 'outer container computed height measured', ScrollingContainerHeightState.outerContainerComputedHeight);
                     };
 
                     // store the computed height on resize
                     // watches get called n times until the model settles. it's typically one or two, but processing in the functions
                     // must be idempotent and as such shouldn't rely on it being any specific number.
-                    scope.$watch('ResizeState', function() {
+                    scope.$watch('ResizeHeightEvent', function() {
                         storeComputedHeight();
                     }, true);
 
@@ -40,8 +42,8 @@ angular.module('angular-table', [])
             }
         };
     }])
-    .directive('headerRow', ['ManualCompiler', 'ScrollingContainerHeightState', 'JqLiteExtension', 'SortState', 'ResizeState', 'ScrollingContainerWidthState',
-        function(ManualCompiler, ScrollingContainerHeightState, JqLiteExtension, SortState, ResizeState, ScrollingContainerWidthState) {
+    .directive('headerRow', ['ManualCompiler', 'ScrollingContainerHeightState', 'JqLiteExtension', 'SortState', 'ResizeHeightEvent', 'ScrollingContainerWidthState', 'Instrumentation',
+        function(ManualCompiler, ScrollingContainerHeightState, JqLiteExtension, SortState, ResizeHeightEvent, ScrollingContainerWidthState, Instrumentation) {
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.
             restrict: 'E',
@@ -62,17 +64,18 @@ angular.module('angular-table', [])
 
                 // return a linking function
                 return function(scope, iElement) {
-                    scope.ResizeState = ResizeState;
+                    scope.ResizeHeightEvent = ResizeHeightEvent;
                     scope.ScrollingContainerWidthState = ScrollingContainerWidthState;
 
                     var storeComputedHeight = function() {
                         ScrollingContainerHeightState.headerComputedHeight = JqLiteExtension.getComputedHeightAsFloat(iElement[0]);
+                        Instrumentation.log('headerRow', 'header computed height measured', ScrollingContainerHeightState.headerComputedHeight);
                     };
 
                     // store the computed height on resize
                     // watches get called n times until the model settles. it's typically one or two, but processing in the functions
                     // must be idempotent and as such shouldn't rely on it being any specific number.
-                    scope.$watch('ResizeState', function() {
+                    scope.$watch('ResizeHeightEvent', function() {
                         storeComputedHeight();
                     }, true);
 
@@ -81,6 +84,7 @@ angular.module('angular-table', [])
                     // must be idempotent and as such shouldn't rely on it being any specific number.
                     scope.$watch('ScrollingContainerWidthState', function(newValue) {
                         iElement.css('width', newValue.scrollingContainerComputedWidth + 'px');
+                        Instrumentation.log('headerRow', 'header width set', newValue.scrollingContainerComputedWidth + 'px');
                     }, true);
 
                     // store the computed height on load
@@ -89,10 +93,10 @@ angular.module('angular-table', [])
             }
         };
     }])
-    .directive('row', ['ManualCompiler', 'ResizeState', '$window', 'Debounce', 'TemplateStaticState', 'RowState', 'SortState',
-        'ScrollingContainerHeightState', 'ScrollingContainerWidthState', 'JqLiteExtension',
-        function(ManualCompiler, ResizeState, $window, Debounce, TemplateStaticState, RowState, SortState, ScrollingContainerHeightState,
-            ScrollingContainerWidthState, JqLiteExtension) {
+    .directive('row', ['ManualCompiler', 'ResizeHeightEvent', '$window', 'Debounce', 'TemplateStaticState', 'RowState', 'SortState',
+        'ScrollingContainerHeightState', 'ScrollingContainerWidthState', 'JqLiteExtension', 'Instrumentation',
+        function(ManualCompiler, ResizeHeightEvent, $window, Debounce, TemplateStaticState, RowState, SortState, ScrollingContainerHeightState,
+            ScrollingContainerWidthState, JqLiteExtension, Instrumentation) {
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.
             restrict: 'E',
@@ -141,16 +145,17 @@ angular.module('angular-table', [])
 
                     var storeComputedWidth = function() {
                         ScrollingContainerWidthState.scrollingContainerComputedWidth = JqLiteExtension.getComputedWidthAsFloat(iElement[0]);
+                        Instrumentation.log('row', 'scrolling container width measured', ScrollingContainerWidthState.scrollingContainerComputedWidth);
                     };
 
                     angular.element($window).bind('resize', Debounce.debounce(function() {
-                        // don't need to apply since we're just reading the dom
-                        storeComputedWidth();
-
                         // must apply since the browser resize event is not being seen by the digest process
                         scope.$apply(function() {
+                            storeComputedWidth();
+
                             // flip the boolean to trigger the watches
-                            ResizeState.debouncedResizeFiring = !ResizeState.debouncedResizeFiring;
+                            ResizeHeightEvent.fireTrigger = !ResizeHeightEvent.fireTrigger;
+                            Instrumentation.log('row', 'debounced window resize triggered');
                         });
                     }, 50));
 
@@ -163,6 +168,7 @@ angular.module('angular-table', [])
                             ScrollingContainerHeightState.outerContainerComputedHeight -
                             ScrollingContainerHeightState.headerComputedHeight;
                         iElement.css('height', newScrollingContainerHeight + 'px');
+                        Instrumentation.log('row', 'scrolling container height set', newScrollingContainerHeight + 'px');
                     }, true);
 
                     // scroll to top when sort applied
@@ -172,13 +178,10 @@ angular.module('angular-table', [])
                         iElement[0].scrollTop = 0;
                     }, true);
 
-                    // check for scrollbars and adjust the header table width as needed when the number of bound rows changes
+                    // check for scrollbars and adjust the header table width, and scrolling table height as needed when the number of bound rows changes
                     scope.$watch('model', function(newValue, oldValue) {
                         storeComputedWidth();
                     }, true);
-
-                    // adjust the scrolling container height when the directive initially links too
-                    ResizeState.debouncedResizeFiring = true;
                 };
             }
         };
@@ -227,17 +230,17 @@ angular.module('angular-table', [])
         var self = this;
 
         // TODO: make this work with IE8<, android 3<, and ios4<: http://caniuse.com/getcomputedstyle
-        var getComputedStyleAsFloat = function(rawDomElement, property) {
+        self.getComputedPropertyAsFloat = function(rawDomElement, property) {
             var computedValueAsString = $window.getComputedStyle(rawDomElement).getPropertyValue(property).replace('px', '');
             return parseFloat(computedValueAsString);
         };
 
-        self.getComputedHeightAsFloat = function(rawDomElement) {
-            return getComputedStyleAsFloat(rawDomElement, 'height');
+        self.getComputedWidthAsFloat = function(rawDomElement) {
+            return self.getComputedPropertyAsFloat(rawDomElement, 'width');
         };
 
-        self.getComputedWidthAsFloat = function(rawDomElement) {
-            return getComputedStyleAsFloat(rawDomElement, 'width');
+        self.getComputedHeightAsFloat = function(rawDomElement) {
+            return self.getComputedPropertyAsFloat(rawDomElement, 'height');
         };
 
         return self;
@@ -327,11 +330,11 @@ angular.module('angular-table', [])
         };
     }])
 
-    .service('ResizeState', function() {
+    .service('ResizeHeightEvent', function() {
         var self = this;
 
         // flip a boolean to indicate resize occured.  the value of the property has no meaning.
-        self.debouncedResizeFiring = false;
+        self.fireTrigger = false;
 
         return self;
     })
@@ -388,4 +391,18 @@ angular.module('angular-table', [])
         self.sortDirectionToColumnMap = {};
 
         return self;
-    });
+    })
+
+    .service('Instrumentation', ['TemplateStaticState', '$log', function(TemplateStaticState, $log) {
+        var self = this;
+        self.log = function(source, event, value) {
+            if(TemplateStaticState.instrumentationEnabled) {
+                $log.log('Source: ' + source);
+                $log.log('Event: ' + event);
+                $log.log('Value: ' + value);
+                $log.log('------------------------\n');
+            }
+        };
+
+        return self;
+    }]);

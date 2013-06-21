@@ -1,0 +1,43 @@
+<html ng-app="demo">
+    <head>
+        <link rel="stylesheet" href="css/lib/angular-table.css" />
+        <link rel="stylesheet" href="css/demo/demo.css" />
+    </head>
+
+    <body ng-controller="demoController" style="height: 100%;">
+
+        <div style="height: 100%; width: 100%; background-color: gainsboro;">
+            <angular-table model="listOfNumbers" default-sort-column="id" instrumentation-enabled="true">
+                <header-row>
+                    <header-column sortable="true" sort-field-name="id" style="width: 40%;">
+                        <div style="display: inline-block;">Id {{ 1 + 1 }}</div>
+                        <sort-arrow-ascending></sort-arrow-ascending>
+                        <sort-arrow-descending></sort-arrow-descending>
+                    </header-column>
+                    <header-column sortable="false" sort-field-name="name" style="width: 30%;">
+                        <sort-arrow-ascending></sort-arrow-ascending>
+                        <sort-arrow-descending></sort-arrow-descending> <div style="display: inline-block;"><i>Name</i></div>
+                    </header-column>
+                    <header-column sortable="true" sort-field-name="street" style="width: 30%;">
+                        <sort-arrow-ascending></sort-arrow-ascending>
+                        <sort-arrow-descending></sort-arrow-descending> <div style="display: inline-block;">Street</div>
+                    </header-column>
+                </header-row>
+
+                <row on-selected="handleRowSelection(row)" selected-color="#87cefa" even-color="#ffffff" odd-color="#eeeeee" class="demoRow">
+                    <column style="width: 40%;"><b>{{ row.id }}</b></column>
+                    <column style="width: 30%;">{{ row.name }}</column>
+                    <column style="width: 30%;">{{ row.street }}</input></column>
+                </row>
+            </angular-table>
+        </div>
+
+        <script src="js/lib/angular.js"></script>
+        <script src="js/lib/angular-table.js"></script>
+        <script src="js/demo/demo.js"></script>
+
+        <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+    </body>
+
+</html>
