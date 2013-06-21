@@ -9,25 +9,26 @@ Quick Start
 
 ```html
 
-<angular-table model="[ { id: 1, name: 'Bob', street: '1 street ave' } ]" default-sort-column="id">
+<angular-table model="[ { id: 1, name: 'Bob', street: '1 street ave' } ]" 
+    default-sort-column="id">
     <header-row>
         <header-column sortable="true" sort-field-name="id">
             <div style="display: inline-block;">Id</div>
             <sort-arrow-ascending></sort-arrow-ascending>
             <sort-arrow-descending></sort-arrow-descending>
         </header-column>
-        <header-column sortable="false" sort-field-name="name" class="demoHeaderColumn">
+        <header-column sortable="false" sort-field-name="name">
             Name
         </header-column>
-        <header-column sortable="true" sort-field-name="street" class="demoFarRightHeaderColumn">
+        <header-column sortable="true" sort-field-name="street">
             <div style="display: inline-block;">Street</div>
             <sort-arrow-ascending></sort-arrow-ascending>
             <sort-arrow-descending></sort-arrow-descending>
         </header-column>
     </header-row>
 
-    <row on-selected="handleRowSelection(row)" selected-color="#87cefa" even-color="#ffffff" 
-        odd-color="#eeeeee">
+    <row on-selected="handleRowSelection(row)" selected-color="#87cefa" 
+        even-color="#ffffff" odd-color="#eeeeee">
         <column>{{ row.id }}</column>
         <column>{{ row.name }}</column>
         <column class="demoFarRightColumn">{{ row.street }}</input></column>
