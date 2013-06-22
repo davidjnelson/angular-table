@@ -83,7 +83,7 @@ Supported browsers:
 All modern browsers are supported: 
 * Windows: Chrome latest, Firefox latest, Internet Explorer 9+
 * OSX: Chrome latest, Firefox latest, Safari Latest
-* IE8<, IOS 4<, and Android 3< are not currently supported since they don't support getComputedProperty.  The project I 
+* IE8<, IOS 4<, and Android 3< are not currently supported since they don't support getComputedStyle.  The project I 
 built this for doesn't have to support IE8<, but if you do and want to add support, let me know.  This would be a 
 fantastic pull request :-)
 
