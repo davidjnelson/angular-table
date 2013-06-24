@@ -8,7 +8,9 @@ No javascript code required; the api is a 100% declarative dsl.
 Quick Start
 -----------
 
-* include angular.js, angular-table.js, and angular-table.css.
+* include [angular.js](https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js), 
+[angular-table.js](https://raw.github.com/davidjnelson/angular-table/master/src/main/webapp/js/lib/angular-table.js), 
+and [angular-table.css](https://raw.github.com/davidjnelson/angular-table/master/src/main/webapp/css/lib/angular-table.css).
 * Put this in your template: 
 
 ```html
@@ -126,6 +128,13 @@ use cases for features, I won't add them.
 
 Interact
 --------
+
+**Discuss existing and create new potential-feature-discussion issues**
+
+Please take a look at potential new features others have proposed and share your thoughts on them.
+Also, please add new potential features that you need in your apps.  Thanks!
+
+https://github.com/davidjnelson/angular-table/issues?labels=potential-feature-discussion&page=1&state=open
 
 Discuss on Hacker News:
 https://news.ycombinator.com/item?id=5920569
