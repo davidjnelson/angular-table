@@ -9,8 +9,8 @@ Quick Start
 -----------
 
 * include angular.js, 
-[https://raw.github.com/davidjnelson/angular-table/master/src/main/webapp/js/lib/angular-table.js](angular-table.js), 
-and [https://raw.github.com/davidjnelson/angular-table/master/src/main/webapp/css/lib/angular-table.css](angular-table.css).
+[angular-table.js](https://raw.github.com/davidjnelson/angular-table/master/src/main/webapp/js/lib/angular-table.js), 
+and [angular-table.css](https://raw.github.com/davidjnelson/angular-table/master/src/main/webapp/css/lib/angular-table.css).
 * Put this in your template: 
 
 ```html
