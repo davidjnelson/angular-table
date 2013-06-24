@@ -127,7 +127,8 @@ use cases for features, I won't add them.
 Interact
 --------
 
-Discuss existing and create new potential-feature-discussion issues:
+*Discuss existing and create new potential-feature-discussion issues:*
+
 Please take a look at potential new features others have proposed and share your thoughts on them.
 Also, please add new potential features that you need in your apps.  Thanks!
 
