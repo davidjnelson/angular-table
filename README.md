@@ -8,7 +8,9 @@ No javascript code required; the api is a 100% declarative dsl.
 Quick Start
 -----------
 
-* include angular.js, angular-table.js, and angular-table.css.
+* include angular.js, 
+[https://raw.github.com/davidjnelson/angular-table/master/src/main/webapp/js/lib/angular-table.js](angular-table.js), 
+and [https://raw.github.com/davidjnelson/angular-table/master/src/main/webapp/css/lib/angular-table.css](angular-table.css).
 * Put this in your template: 
 
 ```html
