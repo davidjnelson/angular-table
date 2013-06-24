@@ -89,7 +89,8 @@ angular.module('angular-table', [])
                     }
 
                     if(clickHandlerFunctionName !== 'undefined') {
-                        $scope.$parent[clickHandlerFunctionName](row);
+                        // TODO: fix this.  this shouldn't even be needed in the first place because parent scope should be linked to the directives ( issue 8 )
+                        $scope.$parent.$parent[clickHandlerFunctionName](row);
                     }
                 };
 
@@ -114,8 +115,6 @@ angular.module('angular-table', [])
 
                 // return a linking function
                 return function(scope, iElement) {
-                    $compile(iElement.contents())(scope.$parent);
-
                     scope.ScrollingContainerHeightState = ScrollingContainerHeightState;
                     scope.SortState = SortState;
 
@@ -226,8 +225,6 @@ angular.module('angular-table', [])
         self.getComputedPropertyAsFloat = function(rawDomElement, property) {
             var computedValueAsString = $window.getComputedStyle(rawDomElement).getPropertyValue(property).replace('px', '');
 
-            // TODO: figure out why 10% of the time the header height is set to auto, and why that causes the header width to not shrink for scrollbars
-
             Instrumentation.log('JqLiteExtension', 'className: ' + rawDomElement.className + '\n' + 'property: ' + property, computedValueAsString);
             return parseFloat(computedValueAsString);
         };
@@ -314,7 +311,7 @@ angular.module('angular-table', [])
                 }
 
                 if(typeof(tAttrs.onSelected) !== 'undefined') {
-                    ' ng-click="handleClick(row, \'' +
+                    ngClick = ' ng-click="handleClick(row, \'' +
                         tAttrs.onSelected + '\', \'' + tAttrs.selectedColor + '\')" '
                 }
 
