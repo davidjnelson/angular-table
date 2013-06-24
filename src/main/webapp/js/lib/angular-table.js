@@ -16,6 +16,11 @@ angular.module('angular-table', [])
                 var rowTemplate = tElement[0].outerHTML.replace('<angular-table', '<div');
                 rowTemplate = rowTemplate.replace('</angular-table>', '</div>');
                 tElement.replaceWith(rowTemplate);
+
+                // return linking function
+                return function(scope) {
+                    scope.parent = scope.$parent;
+                };
             },
             scope: {
                 model: '='
@@ -98,10 +103,6 @@ angular.module('angular-table', [])
                             return TemplateStaticState.oddRowColor;
                         }
                     }
-                };
-
-                $scope.triggerDeleteModal = function(row) {
-                    $scope['triggerDeleteModal'](row);
                 };
             }],
             // manually transclude and replace the template to work around not being able to have a template with td or tr as a root element
