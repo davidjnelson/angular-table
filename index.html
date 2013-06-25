@@ -115,6 +115,17 @@ so that the icon and your header text aligns.</li>
 <li>To customize the styling, remove or change the classes 'angularTableDefaultSortArrowAscending' and
 'angularTableDefaultSortArrowDescending' in angular-table.css.</li>
 </ul><h2>
+<a name="temporary-workaround-to-issue-8-transcluded-expressions-not-executing-in-parent-scope" class="anchor" href="#temporary-workaround-to-issue-8-transcluded-expressions-not-executing-in-parent-scope"><span class="octicon octicon-link"></span></a>Temporary workaround to <a href="https://github.com/davidjnelson/angular-table/issues/8">issue 8</a> (transcluded expressions not executing in parent scope)</h2>
+
+<p>Should have this fixed in the near future, but in the meantime you can prepend "parent." to any expression you want
+evalued in the parent scope, for example:</p>
+
+<div class="highlight"><pre>
+<span class="nt">&lt;column&gt;&lt;a</span> <span class="na">href</span> <span class="na">ng-click=</span><span class="s">"parent.inParentScope(row)"</span><span class="nt">&gt;</span>should call parent scope<span class="nt">&lt;/a&gt;&lt;/column&gt;</span>
+
+</pre></div>
+
+<h2>
 <a name="supported-browsers" class="anchor" href="#supported-browsers"><span class="octicon octicon-link"></span></a>Supported browsers:</h2>
 
 <p>All modern browsers are supported: </p>
