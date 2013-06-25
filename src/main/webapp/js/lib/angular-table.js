@@ -23,7 +23,8 @@ angular.module('angular-table', [])
                 };
             },
             scope: {
-                model: '='
+                model: '=',
+                filterQueryModel: '='
             }
         };
     }])
@@ -88,8 +89,7 @@ angular.module('angular-table', [])
                     }
 
                     if(clickHandlerFunctionName !== 'undefined') {
-                        // TODO: fix this.  this shouldn't even be needed in the first place because parent scope should be linked to the directives ( issue 8 )
-                        $scope.$parent.$parent[clickHandlerFunctionName](row);
+                        $scope.$parent[clickHandlerFunctionName](row);
                     }
                 };
 
@@ -316,7 +316,7 @@ angular.module('angular-table', [])
 
                 // add the ng-repeat and row selection click handler to each row
                 rowTemplate = rowTemplate.replace('<tr',
-                    '<tr ng-repeat="row in model | orderBy:SortState.sortExpression:SortState.sortDirectionToColumnMap[SortState.sortExpression]" ' +
+                    '<tr ng-repeat="row in model | orderBy:SortState.sortExpression:SortState.sortDirectionToColumnMap[SortState.sortExpression] | filter:filterQueryModel" ' +
                         selectedBackgroundColor + ngClick);
             }
 
@@ -404,4 +404,3 @@ angular.module('angular-table', [])
 
         return self;
     }]);
-    
