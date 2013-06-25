@@ -80,7 +80,7 @@ so that the icon and your header text aligns.
 * To customize the styling, remove or change the classes 'angularTableDefaultSortArrowAscending' and
 'angularTableDefaultSortArrowDescending' in angular-table.css.
 
-Workaround to [issue 8](https://github.com/davidjnelson/angular-table/issues/8) (transcluded expressions not executing in parent scope)
+Temporary workaround to [issue 8](https://github.com/davidjnelson/angular-table/issues/8) (transcluded expressions not executing in parent scope)
 ---------------------------------------------------------------------------------
 Should have this fixed in the near future, but in the meantime you can prepend "parent." to any expression you want
 evalued in the parent scope, for example:
