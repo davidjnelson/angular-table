@@ -73,7 +73,6 @@ angular.module('angular-table', [])
         return {
             // only support elements for now to simplify the manual transclusion and replace logic.
             restrict: 'E',
-            scope: true,
             controller: ['$scope', function($scope) {
                 $scope.sortExpression = SortState.sortExpression;
 
@@ -405,3 +404,4 @@ angular.module('angular-table', [])
 
         return self;
     }]);
+    
