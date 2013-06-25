@@ -15,7 +15,7 @@ and [angular-table.css](https://raw.github.com/davidjnelson/angular-table/master
 
 ```html
 
-<angular-table model="[ { id: 1, name: 'Bob', street: '1 street ave' } ]" 
+<angular-table model="[ { id: 1, name: 'Bob', street: '1 street ave' } ]"  filter-query-model="filterQuery"
     default-sort-column="id">
     <header-row>
         <header-column sortable="true" sort-field-name="id">
@@ -58,6 +58,7 @@ Features:
 * 100% declarative dsl - no javascript required
 * fixed headers
 * sortable headers
+* pass a model on the parent scope to filter data by
 * sorting tracks the state of ascending / descending on a per column basis
 * extremely easy to customize, just add your own html and css to the custom html tags.  it just works!
 * simple row selection.  just pass the name of a method on your controller scope, and the row will be passed in.
