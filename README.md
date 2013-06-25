@@ -15,8 +15,8 @@ and [angular-table.css](https://raw.github.com/davidjnelson/angular-table/master
 
 ```html
 
-<angular-table model="[ { id: 1, name: 'Bob', street: '1 street ave' } ]"  filter-query-model="filterQuery"
-    default-sort-column="id">
+<angular-table model="[ { id: 1, name: 'Bob', street: '1 street ave' } ]" 
+    filter-query-model="filterQuery" default-sort-column="id">
     <header-row>
         <header-column sortable="true" sort-field-name="id">
             <div style="display: inline-block;">Id</div>
