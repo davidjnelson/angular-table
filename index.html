@@ -108,6 +108,23 @@ container adjusts its height to pixel perfection, even if your container's heigh
 <li>does not require any dependencies other than stock angular.  no jquery needed.</li>
 <li>simple.  only 400 lines of code.</li>
 </ul><h2>
+<a name="styling-the-grid" class="anchor" href="#styling-the-grid"><span class="octicon octicon-link"></span></a>Styling the grid:</h2>
+
+<p>You can put your own classes and styles on any of the custom elements.</p>
+
+<p>So for your example, if you want to use the bootstrap progress bar in one of your columns, on the:</p>
+
+<div class="highlight"><pre><span class="nt">&lt;column&gt;</span>
+</pre></div>
+
+<p>element you can just add the progress class to it directly like this:</p>
+
+<div class="highlight"><pre><span class="nt">&lt;column</span> <span class="na">class=</span><span class="s">"progress"</span><span class="nt">&gt;</span>
+</pre></div>
+
+<p>You can also edit the angular-table.css file as needed, and/or inherit from its classes in your own css file.</p>
+
+<h2>
 <a name="styling-the-ascending--descending-icons" class="anchor" href="#styling-the-ascending--descending-icons"><span class="octicon octicon-link"></span></a>Styling the ascending / descending icons:</h2>
 
 <ul>
@@ -125,6 +142,13 @@ evalued in the parent scope, for example:</p>
 <span class="nt">&lt;column&gt;&lt;a</span> <span class="na">href</span> <span class="na">ng-click=</span><span class="s">"parent.inParentScope(row)"</span><span class="nt">&gt;</span>should call parent scope<span class="nt">&lt;/a&gt;&lt;/column&gt;</span>
 
 </pre></div>
+
+<h2>
+<a name="how-to-use-angular-table-with-jade-templates" class="anchor" href="#how-to-use-angular-table-with-jade-templates"><span class="octicon octicon-link"></span></a>How to use angular-table with jade templates:</h2>
+
+<p>It will work, but you have to be very careful with the tabs.  Here is a working example:</p>
+
+<p><a href="https://github.com/davidjnelson/angular-table/issues/18">https://github.com/davidjnelson/angular-table/issues/18</a></p>
 
 <h2>
 <a name="supported-browsers" class="anchor" href="#supported-browsers"><span class="octicon octicon-link"></span></a>Supported browsers:</h2>
