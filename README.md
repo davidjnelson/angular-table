@@ -111,6 +111,12 @@ evalued in the parent scope, for example:
 
 ```
 
+How to use angular-table with jade templates:
+---------------------------------------------
+
+It will work, but you have to be very careful with the tabs.  Here is a working example:
+
+https://github.com/davidjnelson/angular-table/issues/18
 
 Supported browsers:
 -------------------
