@@ -73,6 +73,25 @@ container adjusts its height to pixel perfection, even if your container's heigh
 * does not require any dependencies other than stock angular.  no jquery needed.
 * simple.  only 400 lines of code.
 
+Styling the grid:
+-----------------
+
+You can put your own classes and styles on any of the custom elements.
+
+So for your example, if you want to use the bootstrap progress bar in one of your columns, on the:
+
+```html
+<column>
+```
+
+element you can just add the progress class to it directly like this:
+
+```html
+<column class="progress">
+```
+
+You can also edit the angular-table.css file as needed, and/or inherit from its classes in your own css file.
+
 Styling the ascending / descending icons:
 -----------------------------------------
 
