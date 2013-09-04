@@ -37,7 +37,7 @@ and [angular-table.css](https://raw.github.com/davidjnelson/angular-table/master
         even-color="#ffffff" odd-color="#eeeeee">
         <column>{{ row.id }}</column>
         <column>{{ row.name }}</column>
-        <column>{{ row.street }}</input></column>
+        <column>{{ row.street }}</column>
     </row>
 </angular-table>
 
