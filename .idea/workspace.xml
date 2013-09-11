@@ -2,15 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="26af95b3-5ce7-4568-9947-f5998bc4fc58" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/css/angular-table-website.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/css/angular-table.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/css/prettify-theme.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/css/prettyify.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js/angular-table-website.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js/angular-table.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js/prettify.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js/ui-bootstrap.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.html" afterPath="$PROJECT_DIR$/index.html" />
     </list>
     <ignored path="fixed-header-angular-table.iws" />
@@ -72,7 +63,7 @@
       <file leaf-file-name="index.html" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="66" column="11" selection-start="3995" selection-end="3995" vertical-scroll-proportion="0.22591743">
+            <state line="159" column="161" selection-start="8545" selection-end="8545" vertical-scroll-proportion="0.896789">
               <folding />
             </state>
           </provider>
@@ -585,7 +576,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="66" column="11" selection-start="3995" selection-end="3995" vertical-scroll-proportion="0.22591743">
+        <state line="159" column="161" selection-start="8545" selection-end="8545" vertical-scroll-proportion="0.896789">
           <folding />
         </state>
       </provider>
