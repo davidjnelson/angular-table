@@ -1,0 +1,38 @@
+.jumbotronHelper {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.starButton {
+    margin-left: 40px;
+}
+
+.forkButton {
+    margin-right: 20px;
+}
+
+.downloadLinkText {
+    font-size: .8em;
+    font-weight: bold;
+}
+
+.standardJumbotronText {
+    font-size: .7em;
+}
+
+.exampleContainer {
+
+}
+
+.codeTextArea {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.bottomMargin {
+    margin-bottom: 20px;
+}
+
+.demoHeaderBottomMargin {
+    margin-bottom: 75px;
+}

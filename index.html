@@ -1,64 +1,161 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html">
+<html xmlns="http://www.w3.org/1999/html" ng-app="angular-table-website">
     <head>
         <meta charset='utf-8' />
         <meta name="description" content="Angular Table : An angular directive for a table with fixed, sortable headers, row selection, row even/odd coloring, which automatically stays the correct height relative to its container when the browser is resized.  No javascript code required; the api is a 100% declarative dsl." />
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/angular-table-website.css">
+        <link rel="stylesheet" href="css/prettify-theme.css">
+        <link rel="stylesheet" href="css/angular-table.css">
         <title>Angular Table - The 100% Declarative Angular Grid Directive</title>
     </head>
 
     <body>
-        <div class="container">
-            <div class="jumbotron" style="margin-top: 10px; text-align: center;">
+        <div class="container linenums lang-html">
+            <div class="jumbotron jumbotronHelper">
                 <div style="display: inline-block;">
                     <img src="img/angular-table-logo-small.png" />
                     <h1>Angular Table</h1>
                     <div class="load">The 100% Declarative Angular Grid Directive</div>
 
                     <iframe src="http://ghbtns.com/github-btn.html?user=davidjnelson&repo=angular-table&type=watch&count=true"
-                            allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20" style="margin-left: 40px;"></iframe>
+                            allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20" class="starButton"></iframe>
                     <iframe src="http://ghbtns.com/github-btn.html?user=davidjnelson&repo=angular-table&type=fork&count=true"
-                            allowtransparency="true" frameborder="0" scrolling="0" width="95" height="20" style="margin-right: 20px;"></iframe>
-                    <a href="https://twitter.com/share" class="twitter-share-button">Tweet</a>
+                            allowtransparency="true" frameborder="0" scrolling="0" width="95" height="20" class="forkButton"></iframe>
+                        <a href="https://twitter.com/share" class="twitter-share-button"
+                           data-url="http://angulartable.com" data-text="The 100% Declarative Angular Grid Directive">Tweet</a>
                     <div class="g-plusone" data-size="medium"></div>
 
-                    <p style="font-size: .8em; font-weight: bold;"><a href="https://github.com/davidjnelson/angular-table/releases">Download The Latest Version</a></p>
-                    <p style="font-size: .7em;">Enormous thanks to the contributors: <a href="https://github.com/jpalumbo" target="_blank">@jpalumbo</a>,
+                    <p class="downloadLinkText"><a href="https://github.com/davidjnelson/angular-table/releases">Download The Latest Version</a></p>
+                    <p class="standardJumbotronText">Enormous thanks to the contributors: <a href="https://github.com/jpalumbo" target="_blank">@jpalumbo</a>,
                         <a href="https://github.com/garaboncias" target="_blank">Radics Laszlo</a>.</p>
-                    <p style="font-size: .7em;">Created with love in Silicon Valley by <a href="https://github.com/davidjnelson" target="_blank">David Nelson</a>.</p>
+                    <p class="standardJumbotronText">Created with love in Silicon Valley by <a href="https://github.com/davidjnelson" target="_blank">David Nelson</a>.</p>
                 </div>
             </div>
 
-            <div class="row" style="margin-left: -7px;">
+            <div class="row">
                 <div class="col-md-4">
-                    <h2>Why Angular Table?</h2>
+                    <h3>Why Angular Table?</h3>
                     <p>
                         Angular Table is the first grid directive to support 100% declarative configuration, so you can use the full power of Angular.
                     </p>
                 </div>
                 <div class="col-md-4">
-                    <h2>Alternatives</h2>
+                    <h3>Alternatives</h3>
                     <p>
                         Other grid directives require embedding huge strings of HTML and Angular templating inside javascript strings.
                     </p>
                 </div>
                 <div class="col-md-4">
-                    <h2>Extensibility</h2>
+                    <h3>Extensibility</h3>
                     <p>
                         Simply use Angular templating to communicate with your controller.  It just works as you'd expect.
                     </p>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Basic Grid Code</h3>
+
+                    <tabset>
+                        <tab heading="index.html">
+<pre class="prettyprint linenums lang-html codeTextArea" ng-non-bindable>
+<angular-table model="[
+    { id: 1, name: 'Bob', street: '1 street ave' },
+    { id: 2, name: 'Kristen', street: '10 road place' },
+    { id: 3, name: 'Sarah', street: '30 gravel road' }
+                      ]"
+               filter-query-model="filterQuery" default-sort-column="id">
+    <header-row>
+        <header-column sortable="true" sort-field-name="id">
+            <div style="display: inline-block;">Id</div>
+            <sort-arrow-ascending></sort-arrow-ascending>
+            <sort-arrow-descending></sort-arrow-descending>
+        </header-column>
+        <header-column sortable="false" sort-field-name="name">
+            Name
+        </header-column>
+        <header-column sortable="true" sort-field-name="street">
+            <div style="display: inline-block;">Street</div>
+            <sort-arrow-ascending></sort-arrow-ascending>
+            <sort-arrow-descending></sort-arrow-descending>
+        </header-column>
+    </header-row>
+
+    <row on-selected="handleRowSelection(row)" selected-color="#87cefa"
+         even-color="#ffffff" odd-color="#eeeeee">
+        <column>{{ row.id }}</column>
+        <column>{{ row.name }}</column>
+        <column>{{ row.street }}</column>
+    </row>
+</angular-table>
+</pre>
+                        </tab>
+                    </tabset>
+                </div>
+                <div class="col-md-6 clearfix">
+                    <h3 class="demoHeaderBottomMargin">Basic Grid Demo</h3>
+
+                    <angular-table model="[
+    { id: 1, name: 'Bob', street: '1 street ave' },
+    { id: 2, name: 'Kristen', street: '10 road place' },
+    { id: 3, name: 'Sarah', street: '30 gravel road' }
+                      ]"
+                                   filter-query-model="filterQuery" default-sort-column="id">
+                        <header-row>
+                            <header-column sortable="true" sort-field-name="id">
+                                <div style="display: inline-block;">Id</div>
+                                <sort-arrow-ascending></sort-arrow-ascending>
+                                <sort-arrow-descending></sort-arrow-descending>
+                            </header-column>
+                            <header-column sortable="false" sort-field-name="name">
+                                Name
+                            </header-column>
+                            <header-column sortable="true" sort-field-name="street">
+                                <div style="display: inline-block;">Street</div>
+                                <sort-arrow-ascending></sort-arrow-ascending>
+                                <sort-arrow-descending></sort-arrow-descending>
+                            </header-column>
+                        </header-row>
+
+                        <row on-selected="handleRowSelection(row)" selected-color="#87cefa"
+                             even-color="#ffffff" odd-color="#eeeeee">
+                            <column>{{ row.id }}</column>
+                            <column>{{ row.name }}</column>
+                            <column>{{ row.street }}</column>
+                        </row>
+                    </angular-table>
+                </div>
+            </div>
         </div>
+        <div class="bottomMargin"></div>
     </body>
 
     <script type="text/javascript">
         (function() {
             var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
             po.src = 'https://apis.google.com/js/plusone.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(po, s);
         })();
     </script>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0rc1/angular.min.js"></script>
+    <script src="js/ui-bootstrap.js"></script>
+    <script src="js/prettify.js"></script>
+    <script src="js/angular-table.js"></script>
+
+    <script>
+        angular.module('angular-table-website', ['ui.bootstrap', 'angular-table']);
+
+        document.querySelectorAll('.prettyprint')[0].innerHTML =
+                document.querySelectorAll('.prettyprint')[0].innerHTML
+                        .replace(/>/g, '&gt;')
+                        .replace(/</g, '&lt;');
+
+        prettyPrint();
+    </script>
+
     <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 </html>
