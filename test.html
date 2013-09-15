@@ -1,0 +1,16 @@
+<!doctype html>
+<html ng-app="angular-table">
+    <head>
+        <link rel="stylesheet" href="/app/styles/angular-table.css">
+    </head>
+    <body>
+        <angular-table ng-init="boundModel = [ { name: 'Sharon', title: 'girlfriend' } ]" ng-model="boundModel"></angular-table>
+
+        <script src="/app/bower_components/angular/angular.js"></script>
+        <script src="/app/scripts/InstantiateModule.js"></script>
+        <script src="/app/scripts/AngularTable.js"></script>
+        <script src="/app/scripts/Header.js"></script>
+
+        <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+    </body>
+</html>

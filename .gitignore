@@ -1,11 +1,5 @@
-<<<<<<< HEAD
-.idea
 node_modules
-=======
-node_modules
-dist
 .tmp
 .sass-cache
 app/bower_components
 .idea
->>>>>>> 9c3f289... got yeoman installed to begin work on angular-table 1.1

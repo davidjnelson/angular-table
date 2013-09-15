@@ -54,7 +54,7 @@ module.exports = function (grunt) {
       },
       //run unit tests with karma (server needs to be already running)
       karma: {
-          files: ['app/js/**/*.js', 'test/spec/**/*.js'],
+          files: ['app/scripts/**/*.js', 'test/spec/**/*.js'],
           tasks: ['karma:unit:run'] //NOTE the :run flag
       }
     },
