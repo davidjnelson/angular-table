@@ -19,27 +19,34 @@ angular.module('angular-table')
             restrict: 'EA',
             require: '?ngModel',
             replace: true,
-            template: '<div></div>',
-            compile: function(tElement, tAttrs) {
+            transclude: true,
+            scope: {},
+            template: '<div ng-transclude></div>',
+            link: function(scope, iElement, iAttrs, ngModel) {
                 headerRowColumnsAreDefined = function() {
-                    return tElement.children().length > 0;
+                    return iElement.children().length > 0;
                 };
 
-                return function(scope, iElement, iAttrs, ngModel) {
-                    ngModel.$render = function() {
-                        scope.model = ngModel.$viewValue;
-
-                        if(!headerRowColumnsAreDefined()) {
-                            var generatedHeaderColumnNames = convertObjectKeysToArray(scope.model),
-                                columnCount = 100 / generatedHeaderColumnNames.length,
-                                columnCountAsPercentage = columnCount.toString(10) + '%';
-
-                            angular.forEach(generatedHeaderColumnNames, function(columnName) {
-                                iElement.append('<div class="angularTableHeaderColumn" style="width: ' + columnCountAsPercentage + ';">' + columnName + '</div>');
-                            });
-                        }
-                    };
+                if(typeof(ngModel) === 'undefined') {
+                    throw new Error('no model was passed via ng-model');
                 }
+
+                ngModel.$render = function() {
+                    scope.model = ngModel.$viewValue;
+
+                    // when angular 1.2 hits stable, replace this with using ng-if to load headerRow and headerColumn in the template
+                    var generatedHeaderColumnNames = convertObjectKeysToArray(scope.model),
+                        columnCount = 100 / generatedHeaderColumnNames.length,
+                        columnCountAsPercentage = columnCount.toString(10) + '%';
+
+                    if(!headerRowColumnsAreDefined()) {
+                        var generatedHeaderColumnNames = convertObjectKeysToArray(scope.model);
+
+                        angular.forEach(generatedHeaderColumnNames, function(columnName) {
+                            iElement.append('<div class="angularTableHeaderColumn" style="width: ' + columnCountAsPercentage + ';">' + columnName + '</div>');
+                        });
+                    }
+                };
             }
         };
     });

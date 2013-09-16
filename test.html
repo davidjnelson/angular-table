@@ -4,12 +4,30 @@
         <link rel="stylesheet" href="/app/styles/angular-table.css">
     </head>
     <body>
-        <angular-table ng-init="boundModel = [ { name: 'Sharon', title: 'girlfriend' } ]" ng-model="boundModel"></angular-table>
+
+        <div style="height: 300px; width: 1000px; border: 1px solid black;" ng-controller="ClickController">
+            <angular-table ng-init="boundModel = [ { name: 'Sharon', age: 27 } ]" ng-model="boundModel">
+                <header-row>
+                    <header-column style="background-color: gray;"><a href ng-click="handleClick('David')">column 1</a></header-column>
+                    <header-column style="background-color: gray;">column 2</header-column>
+                </header-row>
+            </angular-table>
+        </div>
 
         <script src="/app/bower_components/angular/angular.js"></script>
         <script src="/app/scripts/InstantiateModule.js"></script>
         <script src="/app/scripts/AngularTable.js"></script>
-        <script src="/app/scripts/Header.js"></script>
+        <script src="/app/scripts/HeaderRow.js"></script>
+        <script src="/app/scripts/HeaderColumn.js"></script>
+
+        <script>
+            angular.module('angular-table')
+                    .controller('ClickController', ['$scope', function($scope) {
+                        $scope.handleClick = function(name) {
+                            console.log(name + ' clicked me!');
+                        };
+                    }])
+        </script>
 
         <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
     </body>
