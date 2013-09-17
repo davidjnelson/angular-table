@@ -3,13 +3,14 @@
     <head>
         <link rel="stylesheet" href="/app/styles/angular-table.css">
     </head>
-    <body>
+    <body style="border: 0; margin: 0; padding: 0;">
 
-        <div style="height: 300px; width: 1000px; border: 1px solid black;" ng-controller="ClickController">
-            <angular-table ng-init="boundModel = [ { name: 'Sharon', age: 27 } ]" ng-model="boundModel">
+        <div style="height: 100%; width: 100%;" ng-controller="ClickController">
+            <angular-table ng-init="boundModel = [ { name: 'Sharon', age: 27, weight: 105 } ]" ng-model="boundModel">
                 <header-row>
-                    <header-column style="background-color: gray;"><a href ng-click="handleClick('David')">column 1</a></header-column>
-                    <header-column style="background-color: gray;">column 2</header-column>
+                    <header-column style="background-color: #dddddd;"><a href ng-click="handleClick('David')">Name</a></header-column>
+                    <header-column style="background-color: #dddddd;" default-sort-column>Age</header-column>
+                    <header-column style="background-color: #dddddd;">Weight</header-column>
                 </header-row>
             </angular-table>
         </div>

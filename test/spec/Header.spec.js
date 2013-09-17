@@ -71,6 +71,39 @@ describe('Header', function() {
             it('the one rendered header column should have a width of 100%', function() {
                 expect(linkedElement.find('.angularTableHeaderColumn').eq(0).css('width')).toEqual('100%');
             });
+
+            describe('when no sort direction arrows are specified', function() {
+                describe('when the column has been specified as the default-sort-column', function() {
+                    beforeEach(function() {
+                        linkedElement = renderDirective(
+                            '<angular-table ng-init="boundModel = [ { name: \'Sharon\' } ]" ng-model="boundModel">' +
+                                '<header-row><header-column default-sort-column>test header text</header-column></header-row></angular-table>');
+                    });
+
+                    it('should show an ascending sort arrow in the header column to the left of the column header title', function() {
+                        var headerColumnFirstChild = linkedElement.find('.angularTableHeaderColumn').eq(0).children().eq(0);
+                        expect(headerColumnFirstChild.css('width')).toEqual('0px');
+                        expect(headerColumnFirstChild.css('height')).toEqual('0px');
+                        expect(headerColumnFirstChild.css('border-left')).toEqual('5px solid transparent');
+                        expect(headerColumnFirstChild.css('border-right')).toEqual('5px solid transparent');
+                        expect(headerColumnFirstChild.css('border-bottom')).toEqual('7px solid black');
+                    });
+                });
+
+                describe('when two columns have been specified as the default-sort-column', function() {
+                    it('should show throw an exception stating that only one header-column may have a default-sort-column specified', function() {
+                            expect(function() {
+                                renderDirective(
+                                    '<angular-table ng-init="boundModel = [ { name: \'Sharon\' } ]" ng-model="boundModel">' +
+                                        '<header-row><header-column default-sort-column>test header text</header-column>' +
+                                        '<header-column default-sort-column>test header text</header-column></header-row></angular-table>');
+                            }).toThrow({
+                                    name: 'MultipleDefaultSortColumns',
+                                    message: 'only one header-column may have a default-sort-column specified'
+                                });
+                    });
+                });
+            });
         });
 
         describe('when two column headers are present in the directive consumer template', function() {
