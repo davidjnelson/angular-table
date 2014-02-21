@@ -9,6 +9,7 @@ angular.module('angular-table', [])
             compile: function (tElement, tAttrs) {
                 SortState.sortExpression = tAttrs.defaultSortColumn;
                 TemplateStaticState.instrumentationEnabled = tAttrs.instrumentationEnabled;
+                TemplateStaticState.modelName = tAttrs.model;
 
                 // find whatever classes were passed into the angular-table, and merge them with the built in classes for the container div
                 tElement.addClass('angularTableContainer');
@@ -18,8 +19,9 @@ angular.module('angular-table', [])
                 tElement.replaceWith(rowTemplate);
 
                 // return linking function
-                return function(scope) {
+                return function(scope, elem, attrs) {
                     scope.parent = scope.$parent;
+
                 };
             },
             scope: {
@@ -316,7 +318,7 @@ angular.module('angular-table', [])
 
                 // add the ng-repeat and row selection click handler to each row
                 rowTemplate = rowTemplate.replace('<tr',
-                    '<tr ng-repeat="row in model | orderBy:SortState.sortExpression:SortState.sortDirectionToColumnMap[SortState.sortExpression] | filter:filterQueryModel" ' +
+                    '<tr ng-repeat="row in ' + TemplateStaticState.modelName + ' | orderBy:SortState.sortExpression:SortState.sortDirectionToColumnMap[SortState.sortExpression] | filter:filterQueryModel" ' +
                         selectedBackgroundColor + ngClick);
             }
 
@@ -365,6 +367,7 @@ angular.module('angular-table', [])
         self.selectedRowColor = '';
         self.evenRowColor = '';
         self.oddRowColor = '';
+        self.modelName = '';
 
         return self;
     })
