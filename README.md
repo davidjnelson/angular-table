@@ -5,6 +5,12 @@ An angular directive for a table with fixed, sortable headers, row selection, ro
 which automatically stays the correct height relative to its container when the browser is resized. 
 No javascript code required; the api is a 100% declarative dsl.
 
+Sponsored By
+------------
+
+[Copy the Shrug Emoji](https://copyshrugemoji.com)
+==================================================
+
 Quick Start
 -----------
 
