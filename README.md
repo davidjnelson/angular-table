@@ -5,43 +5,7 @@ An angular directive for a table with fixed, sortable headers, row selection, ro
 which automatically stays the correct height relative to its container when the browser is resized. 
 No javascript code required; the api is a 100% declarative dsl.
 
-Quick Start
------------
-
-* include [angular.js](https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js), 
-[angular-table.js](https://raw.github.com/davidjnelson/angular-table/master/src/main/webapp/js/lib/angular-table.js), 
-and [angular-table.css](https://raw.github.com/davidjnelson/angular-table/master/src/main/webapp/css/lib/angular-table.css).
-* Put this in your template: 
-
-```html
-
-<angular-table model="[ { id: 1, name: 'Bob', street: '1 street ave' } ]" 
-    filter-query-model="filterQuery" default-sort-column="id">
-    <header-row>
-        <header-column sortable="true" sort-field-name="id">
-            <div style="display: inline-block;">Id</div>
-            <sort-arrow-ascending></sort-arrow-ascending>
-            <sort-arrow-descending></sort-arrow-descending>
-        </header-column>
-        <header-column sortable="false" sort-field-name="name">
-            Name
-        </header-column>
-        <header-column sortable="true" sort-field-name="street">
-            <div style="display: inline-block;">Street</div>
-            <sort-arrow-ascending></sort-arrow-ascending>
-            <sort-arrow-descending></sort-arrow-descending>
-        </header-column>
-    </header-row>
-
-    <row on-selected="handleRowSelection(row)" selected-color="#87cefa" 
-        even-color="#ffffff" odd-color="#eeeeee">
-        <column>{{ row.id }}</column>
-        <column>{{ row.name }}</column>
-        <column>{{ row.street }}</column>
-    </row>
-</angular-table>
-
-```
+# [angular-table Installation And Quick Start](https://installdocs.com/angular-table)
 
 # [Angular Table Live Demo](http://angulartable.com/demo/index.html)
 
